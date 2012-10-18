@@ -8,3 +8,5 @@ nbproject
 .settings
 composer.lock
 data/*
+
+data/log/system.log
