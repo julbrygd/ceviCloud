@@ -3,15 +3,26 @@
     "description": "Skeleton Application for ZF2",
     "license": "BSD-3-Clause",
     "keywords": [
-        "framework",
-        "zf2"
+    "framework",
+    "zf2"
+    ],
+    "repositories": [
+    {
+        "type": "composer",
+        "url": "http://packages.zendframework.com/"
+    }
     ],
     "homepage": "http://framework.zend.com/",
-     "minimum-stability": "dev",
-     "require": {
-        "doctrine/doctrine-module": "dev-master",
+    "require": {
+        "doctrine/data-fixtures": "v1.0.0-ALPHA3",
+        "doctrine/migrations": "v1.0.0-ALPHA1",
+        "doctrine/doctrine-module": "*",
+        "doctrine/doctrine-orm-module": "0.5.3",
+        "doctrine/common": "2.3.*",
         "doctrine/orm": "2.3.0",
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.*",
-        "zendframework/zendservice-recaptcha": "*"    }
+        "zendframework/zend-developer-tools": "*",
+        "zendframework/zendservice-recaptcha": "*"
+    }
 }

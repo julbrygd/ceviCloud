@@ -94,7 +94,6 @@ class Logger extends \Zend\Log\Logger{
                 }
             }
         }
-        $logger->info(realpath (__DIR__. "/../../../.."));
         return $logger;
     }
     

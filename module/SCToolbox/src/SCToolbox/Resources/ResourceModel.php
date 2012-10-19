@@ -75,16 +75,17 @@ class ResourceModel {
                 $tmp->file = $file;
                 $tmp->module = $module;
                 $tmp->type = "css";
-                $this->add("css", $tmp);
+                $this->add($tmp);
             }
             foreach($config["baseJS"] as $key=>$file){
                 $tmp = new Resource();
                 $tmp->file = $file;
                 $tmp->module = $module;
                 $tmp->type = "js";
-                $this->add("js", $tmp);
+                $this->add($tmp);
             }
         }
+        $this->createLinks();
     }
 
     public function __get($name) {
@@ -97,11 +98,35 @@ class ResourceModel {
             $this->_res[$name] = $value;
     }
 
-    public function add($type, Resource $res) {
+    public function add(Resource $res, $type = null) {
+        if($type==null)
+            $type = $res->type;
         $arr = $this->$type;
         if(!in_array($res, $arr))
                 $arr[] = $res;
         $this->$type = $arr;
+        return $this;
+    }
+    
+    public function createLinks(){
+        $modConf = $this->_config->getModuleConfig();
+        $publicPath = $this->_config->getPublicPath()."/res";
+        if(!is_dir($publicPath)){
+            mkdir($publicPath);
+        }
+        foreach($this->_modulePaths as $mod=>$path){
+            $public = "public";
+            if(isset($modConf[$mod]["publicPath"]))
+                $public = $modConf[$mod]["publicPath"];
+            else {
+                $public = $path."/".$public;
+            }
+            $public = realpath($public);
+            $web = ($publicPath ."/".strtolower($mod));
+            if(!is_dir($web) && is_dir($public)){
+                symlink($public, $web);
+           }
+        }
     }
 
     public function getResType() {

@@ -53,12 +53,12 @@ return array(
               "publicPath" => realpath(__DIR__."/../public"),
               "baseCSS" => array(
                   "css/bootstrap.min.css",
-                  "css/cupertino/jquery-ui-1.8.24.custom.css",
+                  "css/cupertino/jquery-ui-1.9.0.custom.min.css",
                   ),
               "baseJS" => array(
                   "js/bootstrap.min.js",
                   "js/jquery-1.8.2.min.js",
-                  "js/jquery-ui-1.8.24.min.js",
+                  "js/jquery-ui-1.9.0.min.js",
               ),
           ),
       ) , 

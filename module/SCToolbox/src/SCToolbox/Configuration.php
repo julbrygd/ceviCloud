@@ -93,7 +93,14 @@ class Configuration {
     }
 
     public function getPublicPath() {
-        return $this->_publicPath;
+        $publicPath = $this->_publicPath;
+        if(!isset($publicPath)){
+            $publicPath = $this->getAppPath()."/public";
+        }
+        if(!is_dir($publicPath)){
+            $publicPath = $this->getAppPath()."/".$publicPath;
+        }
+        return $publicPath;
     }
 
     public function setPublicPath($_publicPath) {
