@@ -1,38 +1,46 @@
 <?php
+
 return array(
     'controllers' => array(
         'invokables' => array(
-            'ZendSkeletonModule\Controller\Skeleton' => 'ZendSkeletonModule\Controller\SkeletonController',
+            'Cloud\Controller\Index' => 'Cloud\Controller\IndexController',
         ),
     ),
     'router' => array(
         'routes' => array(
-            'module-name-here' => array(
-                'type'    => 'Literal',
+            'home' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    // Change this to something specific to your module
-                    'route'    => '/module-specific-root',
+                    'route' => '/',
                     'defaults' => array(
-                        // Change this value to reflect the namespace in which
-                        // the controllers for your module are found
-                        '__NAMESPACE__' => 'ZendSkeletonModule\Controller',
-                        'controller'    => 'Skeleton',
-                        'action'        => 'index',
+                        'controller' => 'Cloud\Controller\Index',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            // The following is a route to simplify getting started creating
+            // new controllers and actions without needing to create a new
+            // module. Simply drop new controllers in, and you can access them
+            // using the path /application/:controller/:action
+            'cloud' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/ui',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Cloud\Controller',
+                        'controller' => 'Index',
+                        'action' => 'index',
                     ),
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    // This route is a sane default when developing a module;
-                    // as you solidify the routes for your module, however,
-                    // you may want to remove it and replace it with more
-                    // specific routes.
                     'default' => array(
-                        'type'    => 'Segment',
+                        'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route' => '/[:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
                             ),
@@ -43,24 +51,27 @@ return array(
         ),
     ),
     'view_manager' => array(
+        'template_map' => array(
+            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+        ),
         'template_path_stack' => array(
-            'ZendSkeletonModule' => __DIR__ . '/../view',
+            __DIR__ . '/../view',
         ),
     ),
     "SCToolbox" => array(
-      "moduleConfig" => array(
-          "Cloud" => array(
-              "publicPath" => realpath(__DIR__."/../public"),
-              "baseCSS" => array(
-                  "css/bootstrap.min.css",
-                  "css/cupertino/jquery-ui-1.9.0.custom.min.css",
-                  ),
-              "baseJS" => array(
-                  "js/bootstrap.min.js",
-                  "js/jquery-1.8.2.min.js",
-                  "js/jquery-ui-1.9.0.min.js",
-              ),
-          ),
-      ) , 
+        "moduleConfig" => array(
+            "Cloud" => array(
+                "publicPath" => realpath(__DIR__ . "/../public"),
+                "baseCSS" => array(
+                    "css/bootstrap.min.css",
+                    "css/cupertino/jquery-ui-1.9.0.custom.min.css",
+                ),
+                "baseJS" => array(
+                    "js/bootstrap.min.js",
+                    "js/jquery-1.8.2.min.js",
+                    "js/jquery-ui-1.9.0.min.js",
+                ),
+            ),
+        ),
     ),
 );

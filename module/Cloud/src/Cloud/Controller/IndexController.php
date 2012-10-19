@@ -7,11 +7,11 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace ZendSkeletonModule\Controller;
+namespace Cloud\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-class SkeletonController extends AbstractActionController
+class IndexController extends AbstractActionController
 {
     public function indexAction()
     {

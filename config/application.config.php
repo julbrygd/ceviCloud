@@ -3,6 +3,7 @@
 return array(
     'modules' => array(
         'Application',
+        'ZendDeveloperTools',
         'DoctrineModule',
         'SCToolbox',
         'Cloud',
