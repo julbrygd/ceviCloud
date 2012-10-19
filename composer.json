@@ -22,7 +22,6 @@
         "doctrine/orm": "2.3.0",
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.*",
-        "zendframework/zend-developer-tools": "*",
         "zendframework/zendservice-recaptcha": "*"
     }
 }
