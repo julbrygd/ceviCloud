@@ -33,6 +33,12 @@ class Resource {
                 break;
             case "type": $ret = $this->type;
                 break;
+            case "path": 
+                if($this->module=="cdn")
+                    $ret = $this->filename;
+                else
+                    $ret = "res/".$this->module ."/".$this->filename;
+                break;
         }
         return $ret;
     }

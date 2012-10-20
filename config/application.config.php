@@ -4,6 +4,8 @@ return array(
     'modules' => array(
         'Application',
         'ZendDeveloperTools',
+        'ZucchiBootstrap',
+        'ZucchiUploader',
         'DoctrineModule',
         'DoctrineORMModule',
         'SCToolbox',

@@ -1,0 +1,29 @@
+{
+    "name": "zucchi/uploader",
+    "description": "Zucchi ZF2 Module to interface with PL Uploader",
+    "type": "library",
+    "keywords": [
+        "library",
+        "zf2",
+        "uploader"
+    ],
+    "homepage": "https://github.com/zucchi/ZucchiUploader",
+    "authors" : [{
+        "name": "Matt Cockayne",
+        "email" : "matt@zucchi.co.uk",
+        "homepage" : "http://devincharge.com/"
+    }],
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=5.4.1",
+        "zucchi/zucchi": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "ZucchiUploader": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}

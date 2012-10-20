@@ -20,6 +20,7 @@ class ResourceModel {
     private $_resType = array("css", "js", "image");
     private $_modulePaths = array();
     private $_currentModule = "";
+    private $_loadedBundels = array();
     /*
      * @var \SCToolbox\Configuration
      */
@@ -62,30 +63,56 @@ class ResourceModel {
                         $this->_modulePaths[$mod] = $path;
                 }
             }
+            $this->createLinks();
             if ($cache) {
                 $file = "<?php\nreturn " . var_export($this->_modulePaths, true) . "\n?>";
                 file_put_contents($modCacheFile, $file);
             }
         }
         $logger = \SCToolbox\Log\Logger::getSystemLogger();
-        foreach($moduleConfig as $module => $config){
+        foreach ($moduleConfig as $module => $config) {
             $publicPath = isset($config["publicPath"]) ? $config["publicPath"] : "";
-            foreach($config["baseCSS"] as $key=>$file){
-                $tmp = new Resource();
-                $tmp->file = $file;
-                $tmp->module = $module;
-                $tmp->type = "css";
-                $this->add($tmp);
+            $base = array();
+            if (isset($config["baseCSS"]))
+                $base["css"] = $config["baseCSS"];
+            if (isset($config["baseCSS"]))
+                $base["js"] = $config["baseJS"];
+            foreach ($base as $type => $b) {
+                foreach ($b as $key => $file) {
+                    $tmp = new Resource();
+                    $tmp->file = $file;
+                    $tmp->module = $module;
+                    $tmp->type = $type;
+                    $this->add($tmp);
+                }
             }
-            foreach($config["baseJS"] as $key=>$file){
-                $tmp = new Resource();
-                $tmp->file = $file;
-                $tmp->module = $module;
-                $tmp->type = "js";
-                $this->add($tmp);
+            if (isset($config["resourceBundles"])) {
+                $cdn = $this->useCDN();
+                foreach ($config["resourceBundles"] as $b) {
+                    $class = $this->_config->getResourceBundels($b);
+                    $res = new $class();
+                    $deps = $res->getDepends();
+                    foreach ($deps as $dep) {
+                        if (!in_array($dep, $this->_loadedBundels)) {
+                            $this->loadResBundle(new $dep(), $cdn);
+                            $this->_loadedBundels[] = $dep;
+                        }
+                    }
+                    $this->loadResBundle($res, $cdn);
+                    $this->_loadedBundels[] = $class;
+                }
             }
         }
-        $this->createLinks();
+    }
+
+    protected function loadResBundle(ResourceBundle $b, $cdn) {
+        $resArr = null;
+        if ($cdn)
+            $resArr = $b->getResCDN();
+        else
+            $resArr = $b->getRes();
+        foreach ($resArr as $res)
+            $this->add($res);
     }
 
     public function __get($name) {
@@ -99,46 +126,46 @@ class ResourceModel {
     }
 
     public function add(Resource $res, $type = null) {
-        if($type==null)
+        if ($type == null)
             $type = $res->type;
         $arr = $this->$type;
-        if(!in_array($res, $arr))
-                $arr[] = $res;
+        if (!in_array($res, $arr))
+            $arr[] = $res;
         $this->$type = $arr;
         return $this;
     }
-    
-    public function createLinks(){
+
+    public function createLinks() {
         $modConf = $this->_config->getModuleConfig();
-        $publicPath = $this->_config->getPublicPath()."/res";
-        if(!is_dir($publicPath)){
+        $publicPath = $this->_config->getPublicPath() . "/res";
+        if (!is_dir($publicPath)) {
             mkdir($publicPath);
         }
-        foreach($this->_modulePaths as $mod=>$path){
+        foreach ($this->_modulePaths as $mod => $path) {
             $public = "public";
-            if(isset($modConf[$mod]["publicPath"]))
+            if (isset($modConf[$mod]["publicPath"]))
                 $public = $modConf[$mod]["publicPath"];
             else {
-                $public = $path."/".$public;
+                $public = $path . "/" . $public;
             }
             $public = realpath($public);
-            if($mod=="SCToolbox")
+            if ($mod == "SCToolbox")
                 $mod = "global";
-            $web = ($publicPath ."/".strtolower($mod));
-            if(!is_dir($web) && is_dir($public)){
+            $web = ($publicPath . "/" . strtolower($mod));
+            if (!is_dir($web) && is_dir($public)) {
                 symlink($public, $web);
-           }
+            }
         }
     }
 
     public function getResType() {
         return $this->_resType;
     }
-    
-    public function setLogger(\SCToolbox\Log\Logger $logger){
+
+    public function setLogger(\SCToolbox\Log\Logger $logger) {
         $this->_log = $logger;
     }
-    
+
     public function getCurrentModule() {
         return $this->_currentModule;
     }
@@ -147,6 +174,9 @@ class ResourceModel {
         $this->_currentModule = $_currentModule;
     }
 
+    public function useCDN() {
+        return $this->_config->useCDN();
+    }
 
 }
 
