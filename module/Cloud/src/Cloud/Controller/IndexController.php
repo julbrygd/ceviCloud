@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -9,19 +10,18 @@
 
 namespace Cloud\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
 
-class IndexController extends AbstractActionController
-{
-    public function indexAction()
-    {
+class IndexController extends AbstractEntityManagerAwareController {
+
+    public function indexAction() {
         return array();
     }
 
-    public function fooAction()
-    {
+    public function fooAction() {
         // This shows the :controller and :action parameters in default route
         // are working when you browse to /module-specific-root/skeleton/foo
         return array();
     }
+
 }

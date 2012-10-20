@@ -122,6 +122,8 @@ class ResourceModel {
                 $public = $path."/".$public;
             }
             $public = realpath($public);
+            if($mod=="SCToolbox")
+                $mod = "global";
             $web = ($publicPath ."/".strtolower($mod));
             if(!is_dir($web) && is_dir($public)){
                 symlink($public, $web);

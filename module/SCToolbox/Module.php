@@ -57,17 +57,17 @@ class Module implements AutoloaderProviderInterface {
         }
         Resources\ResourceModel::CONFIG($c);
         
-        $app = $e->getApplication();
-        $app->getEventManager()->attach('dispatch', array($this, 'renderAssets'), 32);
-    }
-    
-    public function renderAssets(\Zend\Mvc\MvcEvent $e){
-        $log = Log\Logger::getSystemLogger();
-        $router = $e->getRouteMatch();
-        $controller = $router->getParam('controller');
-        $module = substr($controller, 0, strpos($controller,"\\"));
-        $log->info($module);
-        Resources\ResourceModel::getInstance()->setCurrentModule($module);
+        $application = $e->getApplication();
+        $serviceManager = $application->getServiceManager();
+
+        $controllerLoader = $serviceManager->get('ControllerLoader');
+
+        // Add initializer to Controller Service Manager that check if controllers needs entity manager injection
+        $controllerLoader->addInitializer(function ($instance) use ($serviceManager) {
+            if (method_exists($instance, 'setEntityManager')) {
+                $instance->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
+            }
+        });
     }
 
 }

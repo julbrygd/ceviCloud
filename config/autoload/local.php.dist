@@ -12,5 +12,13 @@
  */
 
 return array(
-    // ...
+    'doctrine' => array(
+        'driver' => array(
+            'orm_default' => array(
+                'drivers' => array(
+                    'My\Namespace' => 'my_annotation_driver'
+                )
+            )
+        )
+    )
 );
