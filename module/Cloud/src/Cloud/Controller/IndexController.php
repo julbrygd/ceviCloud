@@ -15,7 +15,10 @@ use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
 class IndexController extends AbstractEntityManagerAwareController {
 
     public function indexAction() {
-        return array();
+        $form = new \Cloud\Form\UserLoginForm();
+        $viewMap = new \Zend\View\Model\ViewModel();
+        $viewMap->form = $form;
+        return $viewMap;
     }
 
     public function fooAction() {
