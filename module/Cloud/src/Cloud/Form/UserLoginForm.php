@@ -35,10 +35,10 @@ class UserLoginForm extends Form{
             )
         ));
         $this->add(array(
-            "name"=>"passowrd",
+            "name"=>"password",
             'attributes'=>array(
                 "type"=>"password",
-                "id"=>"passowrd"
+                "id"=>"password"
             ),
             "options"=>array(
                 "label"=>"Passwort"
