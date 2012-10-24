@@ -1,5 +1,7 @@
 <strong>Module:</strong>        Cloud &raquo;
 <strong>Controller:</strong>    User &raquo;
 <strong>Action:</strong>        test
-<?php echo $this->path;?><br />
-<?php echo $this->test;?>
+<br />
+<?php echo var_dump(array(
+    "path"=>$this->path,
+    "test"=>$this->test));?>

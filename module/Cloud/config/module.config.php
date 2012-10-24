@@ -47,6 +47,22 @@ return array(
                             ),
                         ),
                     ),
+                    "userActivate"=>array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/user/activate[/username[/:username[/key[/:key]]]]',
+                            'constraints' => array(
+                                'controller'=>"user",
+                                'action'=>'activate',
+                                'username' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'key' => '[a-zA-Z0-9][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller'=>"user",
+                                'action'=>'activate',
+                            ),
+                        ),
+                    )
                 ),
             ),
         ),

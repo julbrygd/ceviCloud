@@ -1,0 +1,31 @@
+<strong>Module:</strong>        Cloud &raquo;
+<strong>Controller:</strong>    User &raquo;
+<strong>Action:</strong>        activate<br />
+
+<?php if($this->failer){ ?>
+<h1>Ein Fehler ist aufgetreten</h1>
+
+Der Benutzer oder der Aktivierungs-Key wurde nicht gefunden.
+
+<?php } else { ?>
+Die Aktivierung war erfolgreich.
+
+<?php } ?>
+
+<script type="text/javascript">
+<!-- 
+function redirect(){
+    var url = "<?php echo $this->url;?>";
+    window.location.href = url;
+}
+var failer = <?php echo $this->failer ? "true" : "false"; ?>;
+if(failer){
+    window.setTimeout("redirect()", 10*1000);
+}else{
+    window.setTimeout("redirect()", 5*1000);
+}
+//-->
+</script>
+
+
+
