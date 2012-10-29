@@ -26,9 +26,20 @@ class Resource {
      */
     protected $resource;
     
+    /**
+     * @ORM\OneTomany(targetEntity="Acl", mappedBy="resource") 
+     */
+    protected $acl;
+    
     function __construct($resource=null) {
+    		$this->acl = new \Doctrine\Common\Collections\ArrayCollection();
         $this->resource = $resource;
     }
+    
+    public function getAcl(){
+    	return $this->acl;
+    }
+    
     public function getResource() {
         return $this->resource;
     }

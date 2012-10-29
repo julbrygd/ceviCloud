@@ -31,4 +31,27 @@ return array(
             }
         ),
     ),
+    'service_manager' => array(
+        'factories' => array(
+            'SCToolbox\AAS\AuthService' => function(\Zend\Di\ServiceLocator $sl) {
+                $em = $sl->get('doctrine.entitymanager.orm_default');
+                $a = new SCToolbox\AAS\AuthService($em);
+                return $a;
+            },
+        ),
+    ),
+    'doctrine' => array(
+        'driver' => array(
+            'SCToolbox_Annotation_Driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(realpath(__DIR__."\..\src\SCToolbox\AAS\Entity\\"))
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'SCToolbox' => 'SCToolbox_Annotation_Driver',
+                )
+            )
+        ),
+     ),
 );

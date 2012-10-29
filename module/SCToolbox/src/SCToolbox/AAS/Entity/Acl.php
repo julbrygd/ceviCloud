@@ -25,7 +25,7 @@ class Acl {
     protected $aid;
     
     /** 
-     * @ORM\ManyToOne(targetEntity="Resource") 
+     * @ORM\ManyToOne(targetEntity="Resource", inversedBy="acl") 
      * @ORM\JoinColumn(name="resource_id", referencedColumnName="rid")
      */
     protected $resource;

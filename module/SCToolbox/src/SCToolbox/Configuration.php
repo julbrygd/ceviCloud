@@ -33,7 +33,7 @@ class Configuration {
     protected $logger;
 
     public function __construct($config) {
-        $this->_applicationEnv = $_SERVER["APPLICATION_ENV"];
+        $this->_applicationEnv = isset($_SERVER["APPLICATION_ENV"]) ? $_SERVER["APPLICATION_ENV"] : "";
         if (is_array($config)) {
             if (isset($config["path"]))
                 $this->_appPath = $config["path"];

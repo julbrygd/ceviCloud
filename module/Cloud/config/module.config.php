@@ -20,10 +20,6 @@ return array(
                     ),
                 ),
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
             'cloud' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -114,13 +110,18 @@ return array(
             ),
         ),
     ),
-    'service_manager' => array(
-        'factories' => array(
-            'SCToolbox\AAS\AuthService' => function(\Zend\Di\ServiceLocator $sl) {
-                $em = $sl->get('doctrine.entitymanager.orm_default');
-                $a = new SCToolbox\AAS\AuthService($em);
-                return $a;
-            },
+    'doctrine' => array(
+        'driver' => array(
+            'Cloud_Annotation_Driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(realpath(__DIR__."/../src/Cloud/Entity"))
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'Cloud' => 'Cloud_Annotation_Driver',
+                )
+            )
         ),
-    ),
+     ),
 );
