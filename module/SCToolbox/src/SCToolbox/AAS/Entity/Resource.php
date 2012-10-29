@@ -23,6 +23,7 @@ class Resource {
     
     /**
      * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(nullable=false)
      */
     protected $resource;
     

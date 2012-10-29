@@ -35,6 +35,12 @@ class Acl {
      */
     protected $permission;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Role")
+     * @ORM\JoinColumn(name="role_id", referencedColumnName="rid")
+     */
+    protected $role;
+    
     public function getAid() {
         return $this->aid;
     }
