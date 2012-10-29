@@ -23,6 +23,16 @@ return array(
     'SCToolbox' => array(
         'path' => realpath(__DIR__ . "/.."),
         'cache' => true,
+        'auth' => array(
+            'controller' => 'Cloud\Controller\User',
+            'action' => 'login',
+        ),
+        'reCAPTCHA'=>array(
+            'pubKey'=>'6LeiRdgSAAAAAF6J7zFmj9zpDLzSfqNIQ5GL_Qs-',
+            'privKey'=>'6LeiRdgSAAAAAN4aVRqc-dNQ14rYPLP9DkF0GzF0',
+            'theme'=>'white',
+            'lang'=>'de',
+        ),
         'log' => array(
             "writer" => array(
                 array(

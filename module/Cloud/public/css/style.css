@@ -1,0 +1,35 @@
+/* 
+    Document   : style
+    Created on : 26.10.2012, 23:05:45
+    Author     : stephan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    background: -moz-linear-gradient(top,  #12266D,  #6A96FF);
+    background: -o-linear-gradient(top, #12266D, #6A96FF);
+    background: linear-gradient(top, #12266D, #6A96FF);
+    background: -webkit-gradient(linear, left top, left bottom, from(#12266D), to(#6A96FF));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#12266D', endColorstr='#6A96FF');
+    
+}
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+.scBox {
+    background-color:#eeeeee;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;padding: 10px
+}
+
+.center {
+    text-align: center;
+}
+
+.fullHeight{
+   height: 201%;
+   padding-top: 60px;
+   padding-bottom: 40px; 
+}
+
+

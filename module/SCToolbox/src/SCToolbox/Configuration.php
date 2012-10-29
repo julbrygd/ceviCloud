@@ -24,6 +24,9 @@ class Configuration {
     protected $_useCDN = false;
     protected $_useCDNifProductiv = true;
     protected $_resourceBundels = array();
+    protected $_authController;
+    protected $_authAction;
+    protected $_reCAPTCHA = array();
     /*
      * @var SCToolbox\Log\Logger
      */
@@ -46,6 +49,16 @@ class Configuration {
                 $this->_modules = $config["modules"];
             if (isset($config["cache"]))
                 $this->_cache = $config["cache"];
+            if(isset($config["auth"])&&  is_array($config["auth"])){
+                $this->_authController = isset($config["auth"]["controller"]) ? $config["auth"]["controller"] : "SCToolbox/AAS/Controller/Login";
+                $this->_authAction = isset($config["auth"]["action"]) ? $config["auth"]["action"] : "login";
+            }
+            if(isset($config["reCAPTCHA"])&&  is_array($config["reCAPTCHA"])){
+                $this->_reCAPTCHA["privKey"] = isset($config["reCAPTCHA"]["privKey"]) ? $config["reCAPTCHA"]["privKey"] : "";
+                $this->_reCAPTCHA["pubKey"] = isset($config["reCAPTCHA"]["pubKey"]) ? $config["reCAPTCHA"]["pubKey"] : "";
+                $this->_reCAPTCHA["theme"] = isset($config["reCAPTCHA"]["theme"]) ? $config["reCAPTCHA"]["theme"] : "red";
+                $this->_reCAPTCHA["lang"] = isset($config["reCAPTCHA"]["lang"]) ? $config["reCAPTCHA"]["lang"] : "en";
+            }
             if (isset($config["log"])) {
                 $log = $config["log"];
                 if (is_string($log)) {
@@ -91,7 +104,7 @@ class Configuration {
                 }
             }
             closedir($dir);
-            if($this->_cache){
+            if ($this->_cache) {
                 $file = "<?php\nreturn " . var_export($this->_resourceBundels, true) . "\n?>";
                 file_put_contents($cacheFile, $file);
             }
@@ -173,15 +186,35 @@ class Configuration {
             $this->_useCDN = false;
         return $this->_useCDN;
     }
-    
-    public function getResourceBundels($name=null){
+
+    public function getResourceBundels($name = null) {
         $ret = null;
-        if($name==null)
+        if ($name == null)
             $ret = $this->_resourceBundels;
-        else if(isset ($this->_resourceBundels[$name]))
+        else if (isset($this->_resourceBundels[$name]))
             $ret = $this->_resourceBundels[$name];
         return $ret;
     }
+
+    public function getAuthController() {
+        return $this->_authController;
+    }
+
+    public function setAuthController($authController) {
+        $this->_authController = $authController;
+    }
+
+    public function getAuthAction() {
+        return $this->_authAction;
+    }
+
+    public function setAuthAction($authAction) {
+        $this->_authAction = $authAction;
+    }
+    public function getReCAPTCHA() {
+        return $this->_reCAPTCHA;
+    }
+
 
 }
 

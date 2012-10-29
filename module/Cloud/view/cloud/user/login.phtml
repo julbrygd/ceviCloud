@@ -1,14 +1,9 @@
-<strong>Module:</strong>        Cloud &raquo;
-<strong>Controller:</strong>    User &raquo;
-<strong>Action:</strong>        login
-<?php echo $this->bootstrapForm($this->form, 'horizontal');?>
-<?php echo $this->ret;?>
-
-<?php
-//echo $this->form->prepare();
-//var_dump($this->form);
-//echo $this->form()->openTag($this->form);
-//echo $this->from()->formRow($this->form->get("username"));
-//echo $this->from()->formRow($this->form->get("password"));
-//echo $this->formSubmit($this->form->get('submit'));
-//echo $this->form()->closeTag();
+<div class="hero-unit center">
+    <h1>Benutzer Registrierung</h1>
+    <div style="width: 600px;padding-left: 30%;padding-right: 50%;text-align: left;">
+        <?php echo $this->bootstrapForm($this->form, 'horizontal'); ?>
+    </div>
+    <div>
+        <a href="<?php echo $this->url("cloud/register") ?>">Registriern</a>
+    </div>
+</div>

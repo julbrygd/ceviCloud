@@ -23,23 +23,48 @@ use Zend\Mail\Transport\SmtpOptions;
  */
 class UserController extends AbstractEntityManagerAwareController {
 
+    public function logoutAction() {
+        $auth = $this->getServiceLocator()->get("SCToolbox\AAS\AuthService");
+        $auth->clearIdentity();
+        return $this->redirect()->toRoute("home");
+    }
+
     public function loginAction() {
         $form = new \Cloud\Form\UserLoginForm();
         $viewModel = new \Zend\View\Model\ViewModel();
-
-        if ($this->getRequest()->isPost()) {
-            $form->setData($this->getRequest()->getPost());
-            if ($form->isValid()) {
-                $viewModel->data = var_dump($form->getData(), true);
+        $auth = $this->getServiceLocator()->get("SCToolbox\AAS\AuthService");
+        if ($auth->isLoggedin()) {
+            $uri = $this->getRequest()->getHeader("referer");
+            if(!($uri instanceof \Zend\Http\Header\Referer))
+                $viewModel = $this->redirect()->toRoute("home");
+            else
+             $viewModel = $this->redirect()->toUrl($uri->getUri());
+        } else {
+            if ($this->getRequest()->isPost()) {
+                $form->setData($this->getRequest()->getPost());
+                if ($form->isValid()) {
+                    $data = $form->getData();
+                    $res = $auth->login($data["username"], $data["password"]);
+                    if ($res->isValid()) {
+                        $rName = $this->getEvent()->getRouteMatch()->getMatchedRouteName();
+                        if ($rName == \SCToolbox\AAS\AuthService::$DEFAULT_LOGIN_ROOTER)
+                            $viewModel = $this->redirect()->toRoute("home");
+                        else {
+                            $viewModel = $this->redirect()->toUrl($this->getRequest()->getHeader("referer")->getUri());
+                        }
+                    } else {
+                        $viewModel->form = $form;
+                    }
+                } else
+                    $viewModel->form = $form;
             } else
                 $viewModel->form = $form;
-        } else
-            $viewModel->form = $form;
+        }
         return $viewModel;
     }
 
     public function registerAction() {
-        $form = new \Cloud\Form\UserRegisterForm();
+        $form = new \Cloud\Form\UserRegisterForm($this->getServiceLocator()->get("SCToolbox/Config")->getReCAPTCHA());
         $viewModel = new \Zend\View\Model\ViewModel;
         $viewModel->form = $form;
         $req = $this->getRequest();
@@ -112,7 +137,7 @@ class UserController extends AbstractEntityManagerAwareController {
         $uri = $this->getRequest()->getUri();
         $url = $uri->getScheme() . "://" . $uri->getHost() . $this->getRequest()->getBaseUrl();
         $username = $user->getUsername();
-        $key = md5($user->getRegister()->getTimestamp());
+        $key = $this->buildActivationKey($user);
         $url .= $this->url()->fromRoute("cloud/userActivate", array("username" => $username, "key" => $key));
 
         $data = array(
@@ -128,11 +153,12 @@ class UserController extends AbstractEntityManagerAwareController {
 
         $hPart = new MimePart($text["html"]);
         $hPart->type = "text/html";
-        $mm->addPart($tPart);
+//        $mm->addPart($tPart);
         $mm->addPart($hPart);
         $msg = new Message();
-        $msg->setEncoding("UTF-8")->setBody($mm);
-        $msg->addFrom("stephan.conrad@gmail.com")->setTo("stephan.conrad@gmail.com");
+        $msg->setBody($mm);
+        $msg->setEncoding("UTF-8");
+        $msg->addFrom("cloud@cevi-birsfelden.ch", "Cevi Birsfelden Cloud")->setTo($user->getEmail(), $user->getName());
         $msg->setSubject("Cevi Birsfelden User Aktivierung");
         $transport = new SmtpTransport();
         $options = new SmtpOptions(array(
@@ -167,7 +193,7 @@ class UserController extends AbstractEntityManagerAwareController {
                 try {
                     $tmp = $q->getSingleResult();
                     $viewModel->failer = false;
-                    $check = md5($tmp->getRegister()->getTimestamp());
+                    $check = $this->buildActivationKey($tmp);
                     if ($check == $key) {
                         //9db9ff1953780c564e34a64f38e669c0
                         $tmp->setActiv(true);
@@ -182,6 +208,14 @@ class UserController extends AbstractEntityManagerAwareController {
             }
         }
         return $viewModel;
+    }
+
+    /**
+     * @param SCToolbox\AAS\Entity\User $user User for bilding activation key
+     * @return string Activation ke
+     */
+    protected function buildActivationKey(SCToolbox\AAS\Entity\User $user) {
+        return md5($user->getUsername() . $user->getEmail());
     }
 
 }

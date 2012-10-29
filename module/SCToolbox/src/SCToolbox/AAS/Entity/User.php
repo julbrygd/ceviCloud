@@ -7,13 +7,15 @@
 namespace SCToolbox\AAS\Entity;
 
 use \Doctrine\ORM\Mapping as ORM;
+
+use \Zend\Permissions\Acl\Role\RoleInterface;
 /**
  * Description of User
  * @ORM\Entity
  * @ORM\Table(name="users")
  * @author stephan
  */
-class User {
+class User implements RoleInterface{
     /**
      * @ORM\Id @ORM\Column(type="integer")
      * @ORM\GeneratedValue
@@ -43,7 +45,13 @@ class User {
      * @ORM\Column(type="datetime")
      */
     protected $register;
-    
+    /**
+     * @ORM\ManyToOne(targetEntity="Role")
+     * @ORM\JoinColumn(name="role_id", referencedColumnName="rid")
+     */
+    protected $role;
+
+
     function __construct($username=null, $password=null, $email=null, $activ=null, $register=null) {
         $this->username = $username;
         $this->password = $password;
@@ -110,8 +118,18 @@ class User {
     public function setName($name) {
         $this->name = $name;
     }
+    
+    public function getRole() {
+        return $this->role;
+    }
 
+    public function setRole($role) {
+        $this->role = $role;
+    }
 
+    public function getRoleId() {
+        return $this->username;
+    }
 }
 
 ?>

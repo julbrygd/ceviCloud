@@ -45,10 +45,11 @@ class UserLoginForm extends Form{
             )
         ));
         $actions = new Collection('actions');
-        $actions->setAttribute('class', 'form-actions');
+   //     $actions->setAttribute('class', 'form-actions');
         $actions->add(array(
             "name"=>"submit",
             "attributes"=>array(
+                "class"=>"btn",
                 "type"=>"submit",
                 "value"=>"Login"
             )

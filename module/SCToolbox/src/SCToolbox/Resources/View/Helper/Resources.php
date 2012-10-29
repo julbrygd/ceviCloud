@@ -29,7 +29,6 @@ class Resources extends \Zend\View\Helper\AbstractHelper{
         $css = $this->_model->css;
         $js  = $this->_model->js;
         $base = $this->getView()->basePath();
-        echo $base;
         foreach ($css as $res){
             $this->getView()->headLink()->appendStylesheet($base."/".$res->path);
         }

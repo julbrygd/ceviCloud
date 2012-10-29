@@ -6,8 +6,59 @@
         <?php echo $this->headTitle('Cevi Cloud'); ?>
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
         <?php echo $this->res(); ?>
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style type="text/css">
+
+        </style>
     </head>
     <body>
-       <?php echo $this->content; ?> 
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">Cevi Cloud</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <?php if($this->user()->isLoggedin()) { 
+                                $user = $this->user()->getUser();
+                                $url = $this->url("cloud/logout");
+                             ?>
+                            <li id="fat-menu" class="dropdown">
+                                <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><?php echo $user->getName(); ?><b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                                    <li><a tabindex="-1" href="#">Einstellungen</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="<?php echo $url ?>">Logout</a></li>
+                                </ul>
+                            </li>
+                            <?php } ?>
+                        </ul>
+                        <ul class="nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid fullHeight">
+            
+            <?php echo $this->content; ?> 
+
+
+            <footer class="well">
+                <p>&copy; Company 2012</p>
+            </footer>
+
+        </div><!--/.fluid-container-->
+        
     </body>
 </html>

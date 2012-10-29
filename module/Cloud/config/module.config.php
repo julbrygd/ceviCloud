@@ -16,6 +16,7 @@ return array(
                     'defaults' => array(
                         'controller' => 'Cloud\Controller\Index',
                         'action' => 'index',
+                        'needsAuth' => true,
                     ),
                 ),
             ),
@@ -31,6 +32,7 @@ return array(
                         '__NAMESPACE__' => 'Cloud\Controller',
                         'controller' => 'Index',
                         'action' => 'index',
+                        'needsAuth' => true,
                     ),
                 ),
                 'may_terminate' => true,
@@ -47,19 +49,42 @@ return array(
                             ),
                         ),
                     ),
-                    "userActivate"=>array(
+                    'register' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/user/register',
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Cloud\Controller',
+                                'controller' => 'User',
+                                'action' => 'register',
+                                'needsAuth' => false,
+                            )
+                        ),
+                    ),
+                    'logout' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/user/logout',
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Cloud\Controller',
+                                'controller' => 'User',
+                                'action' => 'logout',
+                            )
+                        ),
+                    ),
+                    "userActivate" => array(
                         'type' => 'Segment',
                         'options' => array(
                             'route' => '/user/activate[/username[/:username[/key[/:key]]]]',
                             'constraints' => array(
-                                'controller'=>"user",
-                                'action'=>'activate',
+                                'controller' => "user",
+                                'action' => 'activate',
                                 'username' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'key' => '[a-zA-Z0-9][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
-                                'controller'=>"user",
-                                'action'=>'activate',
+                                'controller' => "user",
+                                'action' => 'activate',
                             ),
                         ),
                     )
@@ -79,11 +104,23 @@ return array(
         "moduleConfig" => array(
             "Cloud" => array(
                 "publicPath" => realpath(__DIR__ . "/../public"),
+                "baseCSS" => array(
+                    "css/style.css"
+                ),
                 "resourceBundles" => array(
                     "jqueryui",
                     "bootstrap"
                 ),
             ),
+        ),
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            'SCToolbox\AAS\AuthService' => function(\Zend\Di\ServiceLocator $sl) {
+                $em = $sl->get('doctrine.entitymanager.orm_default');
+                $a = new SCToolbox\AAS\AuthService($em);
+                return $a;
+            },
         ),
     ),
 );

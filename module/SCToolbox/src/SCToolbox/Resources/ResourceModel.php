@@ -72,20 +72,6 @@ class ResourceModel {
         $logger = \SCToolbox\Log\Logger::getSystemLogger();
         foreach ($moduleConfig as $module => $config) {
             $publicPath = isset($config["publicPath"]) ? $config["publicPath"] : "";
-            $base = array();
-            if (isset($config["baseCSS"]))
-                $base["css"] = $config["baseCSS"];
-            if (isset($config["baseCSS"]))
-                $base["js"] = $config["baseJS"];
-            foreach ($base as $type => $b) {
-                foreach ($b as $key => $file) {
-                    $tmp = new Resource();
-                    $tmp->file = $file;
-                    $tmp->module = $module;
-                    $tmp->type = $type;
-                    $this->add($tmp);
-                }
-            }
             if (isset($config["resourceBundles"])) {
                 $cdn = $this->useCDN();
                 foreach ($config["resourceBundles"] as $b) {
@@ -100,6 +86,20 @@ class ResourceModel {
                     }
                     $this->loadResBundle($res, $cdn);
                     $this->_loadedBundels[] = $class;
+                }
+            }
+            $base = array();
+            if (isset($config["baseCSS"]))
+                $base["css"] = $config["baseCSS"];
+            if (isset($config["baseJS"]))
+                $base["js"] = $config["baseJS"];
+            foreach ($base as $type => $b) {
+                foreach ($b as $key => $file) {
+                    $tmp = new Resource();
+                    $tmp->file = $file;
+                    $tmp->module = $module;
+                    $tmp->type = $type;
+                    $this->add($tmp);
                 }
             }
         }

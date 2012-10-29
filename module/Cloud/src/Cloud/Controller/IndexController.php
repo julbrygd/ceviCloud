@@ -15,9 +15,9 @@ use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
 class IndexController extends AbstractEntityManagerAwareController {
 
     public function indexAction() {
-        $form = new \Cloud\Form\UserLoginForm();
         $viewMap = new \Zend\View\Model\ViewModel();
-        $viewMap->form = $form;
+        $this->getServiceLocator()->get("ACL");
+      
         return $viewMap;
     }
 
