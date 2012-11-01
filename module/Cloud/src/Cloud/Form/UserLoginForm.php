@@ -10,6 +10,8 @@ namespace Cloud\Form;
 use Zend\Form\Form;
 
 use Zend\Form\Element\Collection;
+use SCToolbox\Form\Element\HTML;
+use SCToolbox\Form\Element\Link;
 
 /**
  * Description of UserLoginForm
@@ -23,12 +25,15 @@ class UserLoginForm extends Form{
         $this->setAttribute("action", "/ui/user/login");
         $this->setAttribute("method", "post");
         $this->setInputFilter(new UserLoginInputFilter());
-        
+        $head = new HTML("header");
+        $head->setHtml("<h2>Login</h2>");
+        $this->add($head);
         $this->add(array(
             "name"=>"username",
             'attributes'=>array(
                 "type"=>"text",
-                "id"=>"username"
+                "id"=>"username",
+                "placeholder"=>"Usernamen"
             ),
             "options"=>array(
                 "label"=>"Username"
@@ -38,7 +43,8 @@ class UserLoginForm extends Form{
             "name"=>"password",
             'attributes'=>array(
                 "type"=>"password",
-                "id"=>"password"
+                "id"=>"password",
+                "placeholder"=>"Passwort"
             ),
             "options"=>array(
                 "label"=>"Passwort"
@@ -56,6 +62,12 @@ class UserLoginForm extends Form{
         ));
         
         $this->add($actions);
+        
+        $reg = new Link("reg");
+        $reg->setText("Registrieren");
+        $reg->setHref("route");
+        $reg->setUrlRoute("cloud/register");
+        $this->add($reg);
     }
 }
 

@@ -59,6 +59,7 @@ class BootstrapRow extends FormRow
     protected $defaultElementTemplates = array(
         'vertical' => '%1$s%2$s%3$s%4$s%5$s',
         'inline' => '%4$s%5$s',
+        'signin' => '%4$s%5$s',
         'search' => '%4$s%5$s',
         'horizontal' => '<div class="control-group %6$s">%1$s%2$s%3$s<div class="controls">%4$s%5$s</div></div>',
         'tableHead' => '<th>%2$s</th>',

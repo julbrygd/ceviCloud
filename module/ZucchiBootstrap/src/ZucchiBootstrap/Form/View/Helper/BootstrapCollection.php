@@ -48,6 +48,7 @@ class BootstrapCollection extends AbstractHelper
     protected $templates = array(
         'vertical' => '<div%s>%s</div>',
         'inline' => '<div%s>%s</div>',
+        'signin' => '<div%s>%s</div>',
         'search' => '<div%s>%s</div>',
         'horizontal' => '<div%s>%s</div>',
         'table' => '<table%s>%s</table>',
