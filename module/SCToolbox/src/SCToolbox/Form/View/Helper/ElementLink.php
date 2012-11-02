@@ -17,7 +17,12 @@ class ElementLink extends AbstractHelper{
 			$route = $element->getUrlRoute();
 			$url = $this->view->url($route);
 		}
-		$output .= $url.'">'.$element->getText()."</a>";
+		$output .= $url.'"';
+		foreach($element->getAttributes() as $key=>$val){
+			if($key=="name") continue;
+			$output .= " ".$key.'="'.$val.'"';
+		}
+		$output .='>'.$element->getText()."</a>";
 		return $output;
 	}
 }

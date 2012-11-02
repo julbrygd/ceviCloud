@@ -7,6 +7,7 @@ return array(
             'user' => '\SCToolbox\AAS\View\Helper\UserHelper',
             'bootstrapForm' => '\SCToolbox\Form\View\Helper\BootstrapForm',
             'scLinkElement' => '\SCToolbox\Form\View\Helper\ElementLink',
+            'form_element' => '\SCToolbox\Form\View\Helper\FormElement',
         ),
     ),
     'controller_plugins' => array(

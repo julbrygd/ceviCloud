@@ -97,7 +97,7 @@ class ResourceModel {
                 foreach ($b as $key => $file) {
                     $tmp = new Resource();
                     $tmp->file = $file;
-                    $tmp->module = $module;
+                    $tmp->module = strtolower($module);
                     $tmp->type = $type;
                     $this->add($tmp);
                 }
