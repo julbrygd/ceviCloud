@@ -5,6 +5,9 @@ return array(
         'invokables' => array(
             'res' => '\SCToolbox\Resources\View\Helper\Resources',
             'user' => '\SCToolbox\AAS\View\Helper\UserHelper',
+            'bootstrapForm' => '\SCToolbox\Form\View\Helper\BootstrapForm',
+            'scLinkElement' => '\SCToolbox\Form\View\Helper\ElementLink',
+            'form_element' => '\SCToolbox\Form\View\Helper\FormElement',
         ),
     ),
     'controller_plugins' => array(
@@ -33,7 +36,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'SCToolbox\AAS\AuthService' => function(\Zend\Di\ServiceLocator $sl) {
+            'SCToolbox\AAS\AuthService' => function(Zend\ServiceManager\ServiceManager $sl) {
                 $em = $sl->get('doctrine.entitymanager.orm_default');
                 $a = new SCToolbox\AAS\AuthService($em);
                 return $a;
