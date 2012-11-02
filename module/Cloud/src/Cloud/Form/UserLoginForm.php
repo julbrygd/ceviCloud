@@ -61,13 +61,18 @@ class UserLoginForm extends Form{
             )
         ));
         
-        $this->add($actions);
-        
         $reg = new Link("reg");
         $reg->setText("Registrieren");
         $reg->setHref("route");
         $reg->setUrlRoute("cloud/register");
-        $this->add($reg);
+        $reg->setAttribute("class", "btn");
+        $reg->setAttribute("style", "margin-left:10px");
+        
+        $actions->add($reg);
+        
+        $this->add($actions);
+        
+        
     }
 }
 
