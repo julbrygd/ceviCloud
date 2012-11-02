@@ -45,7 +45,7 @@ return array(
             'SCToolbox_Annotation_Driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(realpath(__DIR__."\..\src\SCToolbox\AAS\Entity\\"))
+                'paths' => array(realpath(__DIR__."/../src/SCToolbox/AAS/Entity/"))
             ),
             'orm_default' => array(
                 'drivers' => array(
