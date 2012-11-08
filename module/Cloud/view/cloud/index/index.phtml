@@ -1,3 +1,21 @@
-<strong>Module:</strong>        Cloud &raquo;
-<strong>Controller:</strong>    Index &raquo;
-<strong>Action:</strong>        index
+<div class="hero-unit">
+    <h1>Cevi Cloud</h1>
+    <p>
+        Willkommen auf der Cevi Cloud von der CVJM/F Jungschar Birsfelden. Im Momment sind 
+        nur folgenden Funktionen forhanden. Diese werden aber laufend erweiter.
+    </p>
+    <p>
+        <ul>
+            <li>Dataimanger</li>
+        </ul>
+    </p>
+</div>
+
+<div calss="well">
+    <h2>Navigation</h2>
+    <?php //var_dump($this->nav->toArray()); ?>
+    <?php 
+        $nav = $this->nav;
+        echo $this->navigation()->render($nav); 
+    ?>
+</div>

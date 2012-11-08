@@ -16,8 +16,11 @@ class IndexController extends AbstractEntityManagerAwareController {
 
     public function indexAction() {
         $viewMap = new \Zend\View\Model\ViewModel();
-        $this->getServiceLocator()->get("ACL");
-      
+        $nav = $this->getServiceLocator()->get("Navigation");
+        $m = $nav->getMenu("main");
+        $m->findById("main_Dateien")->setController("file");
+        $nav->saveMenu($m);
+        $viewMap->nav = $m;
         return $viewMap;
     }
 

@@ -5,6 +5,7 @@ return array(
         'invokables' => array(
             'Cloud\Controller\Index' => 'Cloud\Controller\IndexController',
             'Cloud\Controller\User' => 'Cloud\Controller\UserController',
+            'Cloud\Controller\File' => 'Cloud\Controller\FileController',
         ),
     ),
     'router' => array(

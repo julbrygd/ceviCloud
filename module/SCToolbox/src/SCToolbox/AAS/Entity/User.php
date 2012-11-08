@@ -15,7 +15,7 @@ use \Zend\Permissions\Acl\Role\RoleInterface;
  * @ORM\Table(name="users")
  * @author stephan
  */
-class User implements RoleInterface{
+class User{
     /**
      * @ORM\Id @ORM\Column(type="integer")
      * @ORM\GeneratedValue
@@ -128,7 +128,7 @@ class User implements RoleInterface{
     }
 
     public function getRoleId() {
-        return $this->username;
+        return "user_".$this->username;
     }
 }
 

@@ -16,7 +16,6 @@ use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
 use Doctrine\DBAL\Types\Type;
 
-
 class Module implements AutoloaderProviderInterface {
 
     /**
@@ -79,6 +78,11 @@ class Module implements AutoloaderProviderInterface {
         $serviceManager->setService("SCToolbox/Config", $this->_config);
 
         $controllerLoader = $serviceManager->get('ControllerLoader');
+        $serviceManager->addInitializer(function ($instance) use ($serviceManager) {
+                    if (method_exists($instance, 'setEntityManager')) {
+                        $instance->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
+                    }
+                });
 
         // Add initializer to Controller Service Manager that check if controllers needs entity manager injection
         $controllerLoader->addInitializer(function ($instance) use ($serviceManager) {
@@ -103,7 +107,6 @@ class Module implements AutoloaderProviderInterface {
                 $e->setRouteMatch($r);
             }
         }
-        
     }
 
 }

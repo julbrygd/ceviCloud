@@ -27,20 +27,14 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'ACL' => function($serviceManger){
-                $em = $serviceManger->get("doctrine.entitymanager.orm_default");
-                $acl = new \SCToolbox\AAS\Acl($em);
-                return $acl;
-            }
-        ),
-    ),
-    'service_manager' => array(
-        'factories' => array(
             'SCToolbox\AAS\AuthService' => function(Zend\ServiceManager\ServiceManager $sl) {
                 $em = $sl->get('doctrine.entitymanager.orm_default');
                 $a = new SCToolbox\AAS\AuthService($em);
                 return $a;
             },
+        ),
+        'invokables' => array(
+            'Navigation' => '\SCToolbox\Navigation\Navigation',
         ),
     ),
     'doctrine' => array(
@@ -48,7 +42,8 @@ return array(
             'SCToolbox_Annotation_Driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(realpath(__DIR__."/../src/SCToolbox/AAS/Entity/"))
+                'paths' => array(realpath(__DIR__ . "/../src/SCToolbox/AAS/Entity"),
+                    realpath(__DIR__ . "/../src/SCToolbox/Navigation/Entity"))
             ),
             'orm_default' => array(
                 'drivers' => array(
@@ -56,5 +51,5 @@ return array(
                 )
             )
         ),
-     ),
+    ),
 );

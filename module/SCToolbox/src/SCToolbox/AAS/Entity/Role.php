@@ -39,7 +39,8 @@ class Role implements RoleInterface{
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="rid")
      */
     protected $parent;
-    
+
+
     function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -65,7 +66,13 @@ class Role implements RoleInterface{
         $this->name = $name;
     }
 
+    /**
+     * 
+     * @return null|\SCToolbox\AAS\Entity\Role
+     */
     public function getParent() {
+        if($this->parent==null)
+            return null;
         return $this->parent;
     }
 
@@ -74,7 +81,11 @@ class Role implements RoleInterface{
     }
         
     public function getRoleId(){
-        return $this->rid;
+        return "role_".$this->name;
+    }
+    
+    public function __toString() {
+        return $this->name;
     }
 }
 
