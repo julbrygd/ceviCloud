@@ -41,5 +41,10 @@ class Module implements AutoloaderProviderInterface
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        /* @var \Zend\ServiceManager\ServiceManager */
+        $sm = $e->getApplication()->getServiceManager();
+        /* @var \Doctrine\ORM\EntityManager */
+        $em = $sm->get('doctrine.entitymanager.orm_default');
+        $em->getEventManager()->addEventListener(\Doctrine\ORM\Events::onFlush, new FileManager\Doctrine\OnFlushListener());
     }
 }

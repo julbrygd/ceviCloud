@@ -17,8 +17,10 @@ abstract class ResourceBundle {
     protected $_res = array();
     protected $_resCDN = array();
     protected $_depends = array();
+    protected $_options = array();
 
-    public function __construct() {
+    public function __construct($options = null) {
+        $this->_options = $options;
         $this->init();
     }
 
@@ -34,6 +36,14 @@ abstract class ResourceBundle {
 
     public function getRes() {
         return $this->_res;
+    }
+
+    public function getOptions() {
+        return $this->_options;
+    }
+
+    public function setOptions($options) {
+        $this->_options = $options;
     }
 
 }

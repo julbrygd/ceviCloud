@@ -53,6 +53,7 @@ class Module implements AutoloaderProviderInterface {
         Type::addType("permission", 'SCToolbox\Doctrine\Types\Permission');
         $eventManager = $e->getApplication()->getEventManager();
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, "onRoute"));
+        $eventManager->attach(MvcEvent::EVENT_RENDER, array($this, "onRender"));
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         $config = null;
@@ -90,6 +91,13 @@ class Module implements AutoloaderProviderInterface {
                         $instance->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
                     }
                 });
+    }
+    
+    public function onRender(MvcEvent $e){
+        $sm = $e->getApplication()->getServiceManager();
+        $nav = $sm->get("Navigation");
+        if($e->getViewModel()->terminate()==FALSE)
+            $e->getViewModel()->setVariable("SCNav", $nav);
     }
 
     public function onRoute(MvcEvent $e) {

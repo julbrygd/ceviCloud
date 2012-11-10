@@ -71,6 +71,14 @@ class Navigation implements EntityManagerAwareInterface, ServiceManagerAwareInte
     public function saveMenu(ExtendedNavigation $menu){
         return $this->save($menu->getMenuName(), $menu);
     }
+    
+    public function setActive(ExtendedNavigation $menu){
+        $router = ExtendedNavigation::getDefaultRouter();
+        $match = ExtendedNavigation::getDefaultRouterMatch();
+        foreach($menu->getPages() as $page){
+            $page->setActive(false);
+        }
+    }
 
     public function save($name, \Zend\Navigation\AbstractContainer $menu) {
         $repo = $this->getEntityManager()->getRepository('SCToolbox\Navigation\Entity\Menu');

@@ -12,7 +12,7 @@ return array(
     ),
     'controller_plugins' => array(
         'invokables' => array(
-            'res' => '\SCToolbox\Resources\View\Helper\Resources',
+            'res' => '\SCToolbox\Resources\Controller\Helper\Resources',
         ),
     ),
     'SCToolbox' => array(

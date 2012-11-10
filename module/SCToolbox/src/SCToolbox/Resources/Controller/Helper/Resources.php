@@ -14,10 +14,16 @@ use SCToolbox\Resources\ResourceModel;
  *
  * @author stephan
  */
-class Resources extends \Zend\Mvc\Controller\Plugin\AbstractPlugin {
+class Resources extends \Zend\Mvc\Controller\Plugin\AbstractPlugin implements \Zend\ServiceManager\ServiceManagerAwareInterface{
 
     protected $_resourceModel;
     protected $_logger;
+    
+    /**
+     *
+     * @var \Zend\ServiceManager\ServiceManager 
+     */
+    protected $_sm;
 
     public function __construct() {
         $this->_resourceModel = ResourceModel::getInstance();
@@ -46,10 +52,26 @@ class Resources extends \Zend\Mvc\Controller\Plugin\AbstractPlugin {
         $this->_resourceModel->add($res);
         return $this;
     }
+    
+    public function addBundle($name){
+        $this->_resourceModel->addBundle($name);
+    }
 
     public function getActualModule() {
-        $controller = $this->route->getParam('controller');
-        return substr($controller, 0, strpos($controller, "\\"));
+        $controller = get_class($this->getController());
+        return strtolower(substr($controller, 0, strpos($controller, "\\")));
+    }
+    
+    /**
+     * 
+     * @return \Zend\ServiceManager\ServiceManager
+     */
+    public function getServiceManager(){
+        return $this->_sm;
+    }
+
+    public function setServiceManager(\Zend\ServiceManager\ServiceManager $serviceManager) {
+        $this->_sm = $serviceManager;
     }
 
 }

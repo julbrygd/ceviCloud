@@ -73,19 +73,8 @@ class ResourceModel {
         foreach ($moduleConfig as $module => $config) {
             $publicPath = isset($config["publicPath"]) ? $config["publicPath"] : "";
             if (isset($config["resourceBundles"])) {
-                $cdn = $this->useCDN();
                 foreach ($config["resourceBundles"] as $b) {
-                    $class = $this->_config->getResourceBundels($b);
-                    $res = new $class();
-                    $deps = $res->getDepends();
-                    foreach ($deps as $dep) {
-                        if (!in_array($dep, $this->_loadedBundels)) {
-                            $this->loadResBundle(new $dep(), $cdn);
-                            $this->_loadedBundels[] = $dep;
-                        }
-                    }
-                    $this->loadResBundle($res, $cdn);
-                    $this->_loadedBundels[] = $class;
+                    $this->addBundle($b);
                 }
             }
             $base = array();
@@ -103,6 +92,20 @@ class ResourceModel {
                 }
             }
         }
+    }
+
+    public function addBundle($name) {
+        $class = $this->_config->getResourceBundels($name);
+        $res = new $class();
+        $deps = $res->getDepends();
+        foreach ($deps as $dep) {
+            if (!in_array($dep, $this->_loadedBundels)) {
+                $this->loadResBundle(new $dep(), $this->useCDN());
+                $this->_loadedBundels[] = $dep;
+            }
+        }
+        $this->loadResBundle($res, $this->useCDN());
+        $this->_loadedBundels[] = $class;
     }
 
     protected function loadResBundle(ResourceBundle $b, $cdn) {

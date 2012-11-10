@@ -56,6 +56,7 @@ class ExtendedNavigation extends ZendNavigation{
                     $page->setRouteMatch(self::getDefaultRouterMatch());
                 }
             }
+            $page->setActive($page->isActive());
         }
         return parent::addPage($page);
     }

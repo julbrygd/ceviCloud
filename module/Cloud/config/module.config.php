@@ -6,6 +6,7 @@ return array(
             'Cloud\Controller\Index' => 'Cloud\Controller\IndexController',
             'Cloud\Controller\User' => 'Cloud\Controller\UserController',
             'Cloud\Controller\File' => 'Cloud\Controller\FileController',
+            'Cloud\Controller\Filerest' => 'Cloud\Controller\FileRestController',
         ),
     ),
     'router' => array(
@@ -96,6 +97,9 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
     ),
     "SCToolbox" => array(
         "moduleConfig" => array(
@@ -116,7 +120,7 @@ return array(
             'Cloud_Annotation_Driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(realpath(__DIR__."/../src/Cloud/Entity"))
+                'paths' => array(realpath(__DIR__ . "/../src/Cloud/FileManager/Entity"))
             ),
             'orm_default' => array(
                 'drivers' => array(
@@ -124,5 +128,5 @@ return array(
                 )
             )
         ),
-     ),
+    ),
 );
