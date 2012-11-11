@@ -5,14 +5,22 @@ $(function(){
         onActivate: function(node) {
             // A DynaTreeNode object is passed to the activation handler
             // Note: we also get this event, if persistence is on, and the page is reloaded.
-            alert("You activated " + node.data.title);
+            //alert("You activated " + node.data.title);
         },
         initAjax: {
             url: "/ui/file/folderStructure",
 //            url:"/test.json",
             data: {
-                "basePath": "/"
+                "fsoid": "0"
             }
+        },
+        onLazyRead: function(node){
+            node.appendAjax({
+                url: "/ui/file/folderStructure",
+                data: {
+                    "fsoid":node.data.fsoid
+                }
+            })
         },
 //        onPostInit: function(isReloading, isError , XMLHttpRequest, textStatus, errorThrown){
 //            alert(errorThrown);

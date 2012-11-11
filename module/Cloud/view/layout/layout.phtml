@@ -48,7 +48,7 @@
                         <?php
                         $menu = $this->SCNav->getMenu("main");
                         $this->SCNav->setActive($menu);
-                        echo $this->navigation()->menu()->setUlClass("nav")->render($this->SCNav->getMenu("main"));
+                        echo $this->subMenu()->setUlClass("nav")->render($this->SCNav->getMenu("main"));
                         ?>
                     </div><!--/.nav-collapse -->
                 </div>

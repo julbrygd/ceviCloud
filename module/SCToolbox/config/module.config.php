@@ -8,6 +8,7 @@ return array(
             'bootstrapForm' => '\SCToolbox\Form\View\Helper\BootstrapForm',
             'scLinkElement' => '\SCToolbox\Form\View\Helper\ElementLink',
             'form_element' => '\SCToolbox\Form\View\Helper\FormElement',
+            'SubMenu' => '\SCToolbox\Navigation\View\Helper\SubMenu',
         ),
     ),
     'controller_plugins' => array(

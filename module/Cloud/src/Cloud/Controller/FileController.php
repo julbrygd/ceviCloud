@@ -21,7 +21,7 @@ class FileController extends AbstractEntityManagerAwareController {
     protected $fsoRepo;
 
     public function indexAction() {
-        $root = $this->fsoRepo->findBy(array("name" => "ROOT"));
+        $root = $this->getRoot();
     }
 
     public function onDispatch(\Zend\Mvc\MvcEvent $e) {
@@ -33,13 +33,26 @@ class FileController extends AbstractEntityManagerAwareController {
     }
 
     public function folderStructureAction() {
-        $base = $this->getRequest()->getQuery("basePath", "/");
-
-        $ret = array(
-            array("title" => "Test 1"),
-            array("title" => "Test 2",
-                "isFolder" => true)
-        );
+        $loadFsoid = $this->getRequest()->getQuery("fsoid", 0);
+        \SCToolbox\Log\Logger::getSystemLogger()->info("FSOID: " . $loadFsoid);
+        $fso = null;
+        if ($loadFsoid == 0) {
+            $fso = $this->getRoot();
+        } else{
+            $fso = $this->fsoRepo->find($loadFsoid);
+        }
+        $ret = array();
+        if ($fso instanceof FileSystemObject) {
+            $ret = $fso->toDynaTreeArray();
+        } else {
+            $ret = array(
+                array("title" => "Test 1"),
+                array("title" => "Test 2",
+                    "isFolder" => true,
+                    "isLazy" => true,
+                    "fsoid" => 2)
+            );
+        }
 //        $ser = Serializer::factory("json");
 //        $res = new ViewModel();
 //        $res->ret = $ret;
@@ -48,6 +61,14 @@ class FileController extends AbstractEntityManagerAwareController {
 //        $this->getResponse()->getHeaders()->addHeaderLine("Content-Type: application/json");
         $res = new \Zend\View\Model\JsonModel($ret);
         return $res;
+    }
+
+    /**
+     * 
+     * @return FileSystemObject
+     */
+    protected function getRoot() {
+        return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
     }
 
 }

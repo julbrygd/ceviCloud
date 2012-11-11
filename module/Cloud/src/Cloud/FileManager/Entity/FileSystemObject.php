@@ -4,9 +4,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace Cloud\FileManager\Entity;
 
 use \Doctrine\ORM\Mapping as ORM;
+
 /**
  * Description of FileSystemObject
  * @ORM\Entity
@@ -14,56 +16,57 @@ use \Doctrine\ORM\Mapping as ORM;
  * @author stephan
  */
 class FileSystemObject {
-    public static $TYPE_FOLDER="folder";
-    public static $TYPE_FILE="file";
-    
+
+    public static $TYPE_FOLDER = "folder";
+    public static $TYPE_FILE = "file";
+
     /**
      * @ORM\Id 
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
     protected $fsoid;
-    
+
     /**
      * @ORM\Column(type="string")
      */
     protected $name;
-    
+
     /**
      * @ORM\Column(type="string")
      */
     protected $type;
-    
+
     /**
      * @ORM\Column(type="object", nullable=true)
      * @var Cloud\FileManager\Entity\Metadata
      */
     protected $metadata;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="FileSystemObject", inversedBy="children")
      * @ORM\JoinColumn(name="parent_fso_id", referencedColumnName="fsoid")
      */
     protected $parent;
-    
+
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection Description
      * @ORM\OneToMany(targetEntity="FileSystemObject", mappedBy="parent")
      */
     protected $children;
-    
+
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
     protected $created;
-    
+
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
     protected $lastModified;
-    
-    
+
     public function getName() {
         return $this->name;
     }
@@ -96,8 +99,17 @@ class FileSystemObject {
         $this->parent = $parent;
     }
 
+    /**
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
     public function getChildren() {
         return $this->children;
+    }
+
+    public function addChild(FileSystemObject $child) {
+        $child->setParent($this);
+        $this->children->add($child);
     }
 
     public function setChildren($children) {
@@ -109,7 +121,7 @@ class FileSystemObject {
     }
 
     public function setCreated(\DateTime $created) {
-        if($this->created == null)
+        if ($this->created == null)
             $this->created = $created;
         $this->setLastModified($this->created);
     }
@@ -125,9 +137,30 @@ class FileSystemObject {
     public function getFsoid() {
         return $this->fsoid;
     }
+    
+    public function hasChildren(){
+        return count($this->children>0)?true:false;
+    }
 
     function __construct() {
-        $this->children =  new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function toDynaTreeArray() {
+        $ret = array();
+        if ($this->hasChildren()==true) {
+            foreach ($this->children as $child) {
+                if ($child->getType() == self::$TYPE_FOLDER) {
+                    $ret[] = array(
+                        "title" => $child->getName(),
+                        "isFolder" => true,
+                        "isLazy" => true,
+                        "fsoid" => $child->getFsoid()
+                    );
+                }
+            }
+        }
+        return $ret;
     }
 
 }
