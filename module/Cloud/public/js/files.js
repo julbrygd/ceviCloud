@@ -40,4 +40,18 @@ $(function(){
 });
 
 
-
+function cloudFileCreateFolder(id){
+    alert($("#"+id).val()+"\nFsoid: "+actualFsoid);
+    var url = "/ui/file/createFolder";
+    var data = {
+      "inFsoid": actualFsoid
+    };
+    $.getJSON(url, data, function(data){
+        if(data.status == "ok")
+            $('#newFolder').modal('hide');
+        else {
+            $('#newFolder > div.modal-body').append("Error");
+        }
+    });
+    
+}

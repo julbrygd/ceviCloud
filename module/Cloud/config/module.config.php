@@ -129,4 +129,9 @@ return array(
             )
         ),
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'FileManager' => '\Cloud\FileManager\FileManager',
+        ),
+    ),
 );

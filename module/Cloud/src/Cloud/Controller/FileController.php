@@ -19,9 +19,17 @@ class FileController extends AbstractEntityManagerAwareController {
      * @var \Doctrine\ORM\EntityRepository
      */
     protected $fsoRepo;
+    /**
+     *
+     * @var \Cloud\FileManager\FileManager
+     */
+    protected $fileManager;
 
     public function indexAction() {
         $root = $this->getRoot();
+        $model = new ViewModel();
+        $model->actualFsoid = $root->getFsoid();
+        return $model;
     }
 
     public function onDispatch(\Zend\Mvc\MvcEvent $e) {
@@ -29,6 +37,7 @@ class FileController extends AbstractEntityManagerAwareController {
         $this->res()->addCss("css/files.css");
         $this->res()->addJs("js/files.js");
         $this->res()->addBundle("jquerydynatree");
+        $this->fileManager = $this->getServiceLocator()->get("FileManager");
         return parent::onDispatch($e);
     }
 
@@ -39,7 +48,7 @@ class FileController extends AbstractEntityManagerAwareController {
         if ($loadFsoid == 0) {
             $fso = $this->getRoot();
         } else{
-            $fso = $this->fsoRepo->find($loadFsoid);
+            $fso = $this->fileManager->find($loadFsoid);
         }
         $ret = array();
         if ($fso instanceof FileSystemObject) {
@@ -68,7 +77,8 @@ class FileController extends AbstractEntityManagerAwareController {
      * @return FileSystemObject
      */
     protected function getRoot() {
-        return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
+        //return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
+        return $this->fileManager->getRoot();
     }
 
 }

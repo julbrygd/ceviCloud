@@ -139,7 +139,7 @@ class FileSystemObject {
     }
     
     public function hasChildren(){
-        return count($this->children>0)?true:false;
+        return count($this->children)>0?true:false;
     }
 
     function __construct() {
