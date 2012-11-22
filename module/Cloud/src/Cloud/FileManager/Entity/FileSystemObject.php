@@ -31,6 +31,11 @@ class FileSystemObject {
      * @ORM\Column(type="string")
      */
     protected $name;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isRootElement;
 
     /**
      * @ORM\Column(type="string")
@@ -141,7 +146,16 @@ class FileSystemObject {
     public function hasChildren(){
         return count($this->children)>0?true:false;
     }
+    
+    public function isRootElement() {
+        return $this->isRootElement;
+    }
 
+    public function setRootElement($isRootElement) {
+        $this->isRootElement = $isRootElement;
+    }
+
+    
     function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
