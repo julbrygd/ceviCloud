@@ -33,6 +33,16 @@ class FileSystemObject {
     protected $name;
     
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $createUser;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $editUser;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $isRootElement;
@@ -84,6 +94,13 @@ class FileSystemObject {
         return $this->type;
     }
 
+    public function getTypeAsString() {
+        $ret = "";
+        if ($this->type == self::$TYPE_FOLDER)
+            $ret = "Ordner";
+        return $ret;
+    }
+
     public function setType($type) {
         $this->type = $type;
     }
@@ -125,6 +142,10 @@ class FileSystemObject {
         return $this->created;
     }
 
+    public function getCreatedAsString($format = "m.d.Y H:i:s") {
+        return $this->created->format($format);
+    }
+
     public function setCreated(\DateTime $created) {
         if ($this->created == null)
             $this->created = $created;
@@ -135,6 +156,10 @@ class FileSystemObject {
         return $this->lastModified;
     }
 
+    public function getLastModifiedAsString($format = "m.d.Y H:i:s") {
+        return $this->lastModified->format($format);
+    }
+
     public function setLastModified($lastModified) {
         $this->lastModified = $lastModified;
     }
@@ -142,11 +167,11 @@ class FileSystemObject {
     public function getFsoid() {
         return $this->fsoid;
     }
-    
-    public function hasChildren(){
-        return count($this->children)>0?true:false;
+
+    public function hasChildren() {
+        return count($this->children) > 0 ? true : false;
     }
-    
+
     public function isRootElement() {
         return $this->isRootElement;
     }
@@ -155,14 +180,38 @@ class FileSystemObject {
         $this->isRootElement = $isRootElement;
     }
 
-    
     function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
+    public function getCreateUser() {
+        return $this->createUser;
+    }
 
+    public function setCreateUser($createUser) {
+        $this->createUser = $createUser;
+    }
+
+    public function getEditUser() {
+        return $this->editUser;
+    }
+
+    public function setEditUser($editUser) {
+        $this->editUser = $editUser;
+    }
+
+    
     public function toDynaTreeArray() {
+        return array(
+            "title" => $this->getName(),
+            "isFolder" => true,
+            "isLazy" => true,
+            "fsoid" => $this->getFsoid()
+        );
+    }
+
+    public function childsToDynaTreeArray() {
         $ret = array();
-        if ($this->hasChildren()==true) {
+        if ($this->hasChildren() == true) {
             foreach ($this->children as $child) {
                 if ($child->getType() == self::$TYPE_FOLDER) {
                     $ret[] = array(

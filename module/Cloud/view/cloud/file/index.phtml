@@ -4,26 +4,141 @@
     </div>
 
     <div class="span9">
-        <div class="well"><a href="#newFolder" role="button" class="btn" data-toggle="modal">Neuer Ordner</a></div>
-        <div class="well">show files</div>
+        <div class="well"><button  id="newFolderButton" role="button" class="btn">Neuer Ordner</button></div>
+        <div class="well">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Dateinamen</th>
+                        <th>Typ</th>
+                        <th>Erstelldatum</th>
+                        <th>&Auml;nderungsdatum</th>
+                        <th>Author</th>
+                        <th>Zuletzt Bearbeitet von</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->root as $rootItem) { ?>
+                        <tr id="fsorow_<?php echo $rootItem->getFsoid(); ?>">
+                            <td><?php echo $rootItem->getName(); ?></td>
+                            <td><?php echo $rootItem->getTypeAsString(); ?></td>
+                            <td><?php echo $rootItem->getCreatedAsString(); ?></td>
+                            <td><?php echo $rootItem->getLastModifiedAsString(); ?></td>
+                            <td><?php echo $rootItem->getCreateUser(); ?></td>
+                            <td><?php echo $rootItem->getEditUser(); ?></td>
+                            <td>
+                                <a href="javascript:showDialog(<?php echo $rootItem->getFsoid() ?>)">
+                                    <i class="icon-pencil"></i>
+                                </a>
+                                <a href="javascript:deleteObject('<?php echo $rootItem->getName(); ?>','<?php echo $rootItem->getType(); ?>', <?php echo $rootItem->getFsoid() ?>)"><i class="icon-trash"></i></a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<div id="newFolder" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Ordner Erstellen</h3>
-    </div>
-    <div class="modal-body">
-        <p><input id="newFolderName" type="text" placeholder="Ordner namen"></p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Schliessen</button>
-        <button class="btn btn-primary" onclick="javascript:cloudFileCreateFolder('newFolderName')">Ok</button>
-    </div>
+<div id="deleteDialog" title="Sind sie sicher">
+    <div id="deleteError"></div>
+    <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><span id="deleteText"></span>
+    <input type="hidden" id="deleteFsoid" />
+</div>
+<div id="newFolderDialog" title="Neuer Ordner">
+    <div id="folderEditError"></div>
+    <p><input id="newFolderName" type="text" placeholder="Ordner namen" /></p>
+    <input type="hidden" id="fsoId" />
+    <input type="hidden" id="folderOperation" />
 </div>
 
 <script type="text/javascript">
- <!--
-    var actualFsoid = <?php echo $this->actualFsoid ;?>
- //-->
+    <!--
+    var actualFsoid = -1;
+    $( "#newFolderDialog" ).dialog({
+        autoOpen: false,
+        modal: true,
+        show: "fade",
+        hide: "fade",
+        buttons: {
+            "Ok": function() {
+                var fsoid = $("#fsoId").val();
+                var name  = $("#newFolderName").val();
+                var url = "/ui/file/";
+                if($("#folderOperation").val()=="create") {
+                    url += "createFolder";
+                } else {
+                    url += "rename";
+                }
+                var data = {
+                    "fsoid": fsoid,
+                    "name": name
+                };
+                $.post(url, data, function(data){
+                    if(!data.error){
+                        $("#newFolderName").val("");
+                        reloadData();
+                        $('#newFolderDialog').dialog( "close" );
+                    } else {
+                        $('#folderEditError').html("Error").show();
+                    }
+                });
+            },
+            "Abbrechen": function() {
+                $("#fsoId").val("");
+                $("#folderOperation").val("");
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+    $('#folderEditError').hide();
+    $( "#newFolderButton" )
+    .click(function() {
+        $("#fsoId").val(actualFsoid);
+        $("#folderOperation").val("create");
+        $( "#newFolderDialog" ).dialog( "open" );
+    });
+    $( "#deleteDialog" ).dialog({
+        autoOpen: false,
+        modal: true,
+        show: "fade",
+        hide: "fade",
+        buttons: {
+            "Ja": function() {
+                var url = "/ui/file/delete";
+                var data = {
+                    "fsoid": $("#deleteFsoid").val()
+                };
+                $.post(url, data, function(data){
+                    if(!data.error){
+                        $("#deleteFsoid").val("");
+                        reloadData();
+                        $("#deleteDialog").dialog( "close" );
+                    } else {
+                        $('#deleteError').html("Error").show();
+                    }
+                });
+            },
+            "Nein": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    function showDialog(fsoid){
+        $("#fsoId").val(fsoid);
+        $("#folderOperation").val("rename");
+        $("#newFolderName").val($("#fsorow_"+fsoid+" > td:first").html());
+        $( "#newFolderDialog" ).dialog( "open" );
+    }
+    
+function deleteObject(name, typ, id){
+    if(typ=="folder")
+        typ = "den Ordner";
+    else
+        typ = "die Datei";
+    $("#deleteFsoid").val(id);
+    $("#deleteText").html("Sind sie sicher, dass sie "+typ+" "+name+" l&ouml;schen wollen?");
+    $("#deleteDialog").dialog("open");
+}
+//-->
 </script>

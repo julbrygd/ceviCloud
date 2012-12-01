@@ -3,13 +3,13 @@ $(function(){
     // and pass the tree options as an argument to the dynatree() function:
     $("#tree").dynatree({
         onActivate: function(node) {
-            // A DynaTreeNode object is passed to the activation handler
-            // Note: we also get this event, if persistence is on, and the page is reloaded.
-            //alert("You activated " + node.data.title);
+        // A DynaTreeNode object is passed to the activation handler
+        // Note: we also get this event, if persistence is on, and the page is reloaded.
+        //alert("You activated " + node.data.title);
         },
         initAjax: {
             url: "/ui/file/folderStructure",
-//            url:"/test.json",
+            //            url:"/test.json",
             data: {
                 "fsoid": "0"
             }
@@ -22,9 +22,9 @@ $(function(){
                 }
             })
         },
-//        onPostInit: function(isReloading, isError , XMLHttpRequest, textStatus, errorThrown){
-//            alert(errorThrown);
-//        },
+        //        onPostInit: function(isReloading, isError , XMLHttpRequest, textStatus, errorThrown){
+        //            alert(errorThrown);
+        //        },
         persist: true/*,
            children: [ // Pass an array of nodes.
                 {title: "Item 1"},
@@ -40,18 +40,7 @@ $(function(){
 });
 
 
-function cloudFileCreateFolder(id){
-    alert($("#"+id).val()+"\nFsoid: "+actualFsoid);
-    var url = "/ui/file/createFolder";
-    var data = {
-      "inFsoid": actualFsoid
-    };
-    $.getJSON(url, data, function(data){
-        if(data.status == "ok")
-            $('#newFolder').modal('hide');
-        else {
-            $('#newFolder > div.modal-body').append("Error");
-        }
-    });
-    
+function reloadData(){
+    var tree = $("#tree").dynatree("getTree");
+    tree.reload();
 }

@@ -45,6 +45,6 @@ class Module implements AutoloaderProviderInterface
         $sm = $e->getApplication()->getServiceManager();
         /* @var \Doctrine\ORM\EntityManager */
         $em = $sm->get('doctrine.entitymanager.orm_default');
-        $em->getEventManager()->addEventListener(\Doctrine\ORM\Events::onFlush, new FileManager\Doctrine\OnFlushListener());
+        $em->getEventManager()->addEventListener(\Doctrine\ORM\Events::onFlush, new FileManager\Doctrine\OnFlushListener($sm));
     }
 }

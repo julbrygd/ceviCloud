@@ -10,6 +10,7 @@ namespace Cloud\Controller;
 use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
 use Zend\Serializer\Serializer;
 use Zend\View\Model\ViewModel;
+use \Zend\View\Model\JsonModel;
 use Cloud\FileManager\Entity\FileSystemObject;
 
 class FileController extends AbstractEntityManagerAwareController {
@@ -19,6 +20,7 @@ class FileController extends AbstractEntityManagerAwareController {
      * @var \Doctrine\ORM\EntityRepository
      */
     protected $fsoRepo;
+
     /**
      *
      * @var \Cloud\FileManager\FileManager
@@ -28,7 +30,7 @@ class FileController extends AbstractEntityManagerAwareController {
     public function indexAction() {
         $root = $this->getRoot();
         $model = new ViewModel();
-        $model->actualFsoid = $root->getFsoid();
+        $model->root = $root;
         return $model;
     }
 
@@ -47,29 +49,59 @@ class FileController extends AbstractEntityManagerAwareController {
         $fso = null;
         if ($loadFsoid == 0) {
             $fso = $this->getRoot();
-        } else{
-            $fso = $this->fileManager->find($loadFsoid);
-        }
-        $ret = array();
-        if ($fso instanceof FileSystemObject) {
-            $ret = $fso->toDynaTreeArray();
+            $ret = array();
+            foreach ($fso as $item) {
+                if ($item instanceof FileSystemObject)
+                    $ret[] = $item->toDynaTreeArray();
+            }
         } else {
-            $ret = array(
-                array("title" => "Test 1"),
-                array("title" => "Test 2",
-                    "isFolder" => true,
-                    "isLazy" => true,
-                    "fsoid" => 2)
-            );
+            $fso = $this->fileManager->find($loadFsoid);
+            $ret = $fso->childsToDynaTreeArray();
         }
-//        $ser = Serializer::factory("json");
-//        $res = new ViewModel();
-//        $res->ret = $ret;
-//        $res->setTerminal(true);
-//        \SCToolbox\Log\Logger::getSystemLogger()->dump($res->ret);
-//        $this->getResponse()->getHeaders()->addHeaderLine("Content-Type: application/json");
         $res = new \Zend\View\Model\JsonModel($ret);
         return $res;
+    }
+
+    public function createFolderAction() {
+        $model = new JsonModel();
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+            if ($this->fileManager->mkdir($data["name"], $data["fsoid"])) {
+                $model->error = false;
+            } else {
+                $model->error = true;
+                $model->message = $this->fileManager->getLastError();
+            }
+        }
+        return $model;
+    }
+
+    public function renameAction() {
+        $model = new JsonModel();
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+            if ($this->fileManager->renameObject($data["name"], $data["fsoid"])) {
+                $model->error = false;
+            } else {
+                $model->error = true;
+                $model->message = $this->fileManager->getLastError();
+            }
+        }
+        return $model;
+    }
+    
+    public function deleteAction() {
+        $model = new JsonModel();
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+            if ($this->fileManager->deleteObject($data["fsoid"])) {
+                $model->error = false;
+            } else {
+                $model->error = true;
+                $model->message = $this->fileManager->getLastError();
+            }
+        }
+        return $model;
     }
 
     /**
