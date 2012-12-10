@@ -11,5 +11,5 @@ data/*
 
 data/log/system.log
 /vendor/
-public/res
+public/res/*
 *.bak
