@@ -20,7 +20,6 @@ class JQueryDynatree  extends \SCToolbox\Resources\ResourceBundle {
                 $skin = $this->_options["skin"];
         }
         $this->_res = array(
-            new \SCToolbox\Resources\Resource("dynatree/jquery.cookie.js", "global", "js"),
             new \SCToolbox\Resources\Resource("dynatree/".$skin."/ui.dynatree.css", "global", "css"),
             new \SCToolbox\Resources\Resource("dynatree/jquery.dynatree-1.2.2.js", "global", "js"),
         );

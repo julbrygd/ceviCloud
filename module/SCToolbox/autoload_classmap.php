@@ -6,4 +6,6 @@ return array(
     'PasswordHash' => __DIR__ . '/src/SCToolbox/AAS/PasswordHash.php',
     'SCToolbox\Navagation\Navigation' => __DIR__ . '/src/SCToolbox/Navigation/Navigation.php',
     'SCToolbox\Navagation\Entity\Page' => __DIR__ . '/src/SCToolbox/Navigation/Entity/Page.php',
+    'SCToolbox\Resources\Bundels\Plupload' => __DIR__ . '/src/SCToolbox/Resources/Bundels/Plupload.php',
+    'SCToolbox\Upload\Plupload\View\Helper\PluploadHelper' => __DIR__ . '/src/SCToolbox/Upload/Plupload/View/Helper/PluploadHelper.php',
 );

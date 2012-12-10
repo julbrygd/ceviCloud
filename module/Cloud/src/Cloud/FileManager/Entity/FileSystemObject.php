@@ -117,7 +117,8 @@ class FileSystemObject {
         return $this->parent;
     }
 
-    public function setParent($parent) {
+    public function setParent(FileSystemObject $parent) {
+        $parent->getChildren()->add($this);
         $this->parent = $parent;
     }
 

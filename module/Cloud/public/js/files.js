@@ -44,3 +44,9 @@ function reloadData(){
     var tree = $("#tree").dynatree("getTree");
     tree.reload();
 }
+
+function ajaxFileLoad(url, id, fsoid){
+    $("#"+id).load(url, function() {
+        actualFsoid = fsoid;
+    });
+}

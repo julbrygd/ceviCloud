@@ -66,7 +66,7 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
      * 
      * @return \Cloud\FileManager\Entity\FileSystemObject
      */
-    public function find(\int $id) {
+    public function find($id) {
         return $this->getRepo()->find($id);
     }
 
@@ -78,7 +78,11 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
         if ($parrent == -1) {
             $dir->setRootElement(true);
         }
-        
+        else {
+            $dir->setRootElement(false);
+            $pFso = $this->getRepo()->find($parrent);
+            $dir->setParent($pFso);
+        }
         $this->getEntityManager()->persist($dir);
         $this->getEntityManager()->flush();
         return true;

@@ -9,6 +9,7 @@ return array(
             'scLinkElement' => '\SCToolbox\Form\View\Helper\ElementLink',
             'form_element' => '\SCToolbox\Form\View\Helper\FormElement',
             'SubMenu' => '\SCToolbox\Navigation\View\Helper\SubMenu',
+            'plupload' => '\SCToolbox\Upload\Plupload\View\Helper\PluploadHelper',
         ),
     ),
     'controller_plugins' => array(

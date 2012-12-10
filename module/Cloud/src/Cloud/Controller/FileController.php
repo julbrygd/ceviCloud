@@ -8,10 +8,10 @@
 namespace Cloud\Controller;
 
 use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
-use Zend\Serializer\Serializer;
 use Zend\View\Model\ViewModel;
 use \Zend\View\Model\JsonModel;
 use Cloud\FileManager\Entity\FileSystemObject;
+use Zend\Session\Container;
 
 class FileController extends AbstractEntityManagerAwareController {
 
@@ -27,10 +27,22 @@ class FileController extends AbstractEntityManagerAwareController {
      */
     protected $fileManager;
 
+    /**
+     * 
+     * @var Zend\Session\Container
+     */
+    protected $session;
+    
+    protected static $SESSION_NAME = "Cloud_FileManager";
+
     public function indexAction() {
-        $root = $this->getRoot();
         $model = new ViewModel();
-        $model->root = $root;
+        $fsoid = -1;
+        if(!isset($_COOKIE["showRoot"]) && isset($_SESSION[self::$SESSION_NAME]["lastFSOID"])){
+            $fsoid = $_SESSION[self::$SESSION_NAME]["lastFSOID"];
+            unset($_COOKIE["showRoot"]);
+        }
+        $model->root = $this->getFsoForHtml($fsoid);
         return $model;
     }
 
@@ -39,13 +51,13 @@ class FileController extends AbstractEntityManagerAwareController {
         $this->res()->addCss("css/files.css");
         $this->res()->addJs("js/files.js");
         $this->res()->addBundle("jquerydynatree");
+        $this->res()->addBundle("plupload");
         $this->fileManager = $this->getServiceLocator()->get("FileManager");
         return parent::onDispatch($e);
     }
 
     public function folderStructureAction() {
         $loadFsoid = $this->getRequest()->getQuery("fsoid", 0);
-        \SCToolbox\Log\Logger::getSystemLogger()->info("FSOID: " . $loadFsoid);
         $fso = null;
         if ($loadFsoid == 0) {
             $fso = $this->getRoot();
@@ -89,7 +101,7 @@ class FileController extends AbstractEntityManagerAwareController {
         }
         return $model;
     }
-    
+
     public function deleteAction() {
         $model = new JsonModel();
         if ($this->getRequest()->isPost()) {
@@ -102,6 +114,26 @@ class FileController extends AbstractEntityManagerAwareController {
             }
         }
         return $model;
+    }
+
+    public function showAction() {
+        $model = new ViewModel();
+        $model->setTerminal(true);
+        $fsoid = $this->getEvent()->getRouteMatch()->getParam("fsoid");
+        $model->fsos = $this->getFsoForHtml($fsoid);
+        return $model;
+    }
+
+    protected function getFsoForHtml($fsoid) {
+        $_SESSION[self::$SESSION_NAME]["lastFSOID"] = $fsoid;
+        $ret = null;
+        if ($fsoid != -1) {
+            $fso = $this->fileManager->find($fsoid);
+            $ret = $fso->getChildren()->toArray();
+        } else {
+            $ret = $this->getRoot();
+        }
+        return $ret;
     }
 
     /**

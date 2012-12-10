@@ -47,6 +47,19 @@ return array(
                             ),
                         ),
                     ),
+                    'showFile' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/file/show/[:fsoid]',
+                            'constraints' => array(
+                                'fsoid' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'file',
+                                'action' => 'show',
+                            ),
+                        ),
+                    ),
                     'register' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -93,6 +106,7 @@ return array(
     'view_manager' => array(
         'template_map' => array(
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'show' => __DIR__ . '/../view/cloud/file/show.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
@@ -107,6 +121,9 @@ return array(
                 "publicPath" => realpath(__DIR__ . "/../public"),
                 "baseCSS" => array(
                     "css/style.css"
+                ),
+                'baseJS' => array(
+                    'js/cloud.js'
                 ),
                 "resourceBundles" => array(
                     "jqueryui",

@@ -1,0 +1,35 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Dateinamen</th>
+            <th>Typ</th>
+            <th>Erstelldatum</th>
+            <th>&Auml;nderungsdatum</th>
+            <th>Author</th>
+            <th>Zuletzt Bearbeitet von</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->fsos as $rootItem) { ?>
+            <tr id="fsorow_<?php echo $rootItem->getFsoid(); ?>">
+                <td>
+                    <a href="javascript:ajaxFileLoad('<?php 
+                        echo $this->url('cloud/showFile', array('fsoid'=>$rootItem->getFsoid())); 
+                    ?>', 'fileSection', <?php echo $rootItem->getFsoid(); ?>)"><?php echo $rootItem->getName(); ?></a>
+                </td>
+                <td><?php echo $rootItem->getTypeAsString(); ?></td>
+                <td><?php echo $rootItem->getCreatedAsString(); ?></td>
+                <td><?php echo $rootItem->getLastModifiedAsString(); ?></td>
+                <td><?php echo $rootItem->getCreateUser(); ?></td>
+                <td><?php echo $rootItem->getEditUser(); ?></td>
+                <td>
+                    <a href="javascript:showDialog(<?php echo $rootItem->getFsoid() ?>)">
+                        <i class="icon-pencil"></i>
+                    </a>
+                    <a href="javascript:deleteObject('<?php echo $rootItem->getName(); ?>','<?php echo $rootItem->getType(); ?>', <?php echo $rootItem->getFsoid() ?>)"><i class="icon-trash"></i></a>
+                </td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
