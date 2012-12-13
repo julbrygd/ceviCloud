@@ -9,7 +9,7 @@
             <button  id="uploadButton" role="button" class="btn">Datei Hochladen</button>
         </div>
         <div class="well" id="fileSection">
-            <?php echo $this->partial('show', array("fsos" => $this->root, "actualFsoid"=>-1));?>
+            <?php echo $this->partial('show', array("fsos" => $this->root, "actualFsoid" => -1)); ?>
         </div>
     </div>
 </div>
@@ -24,13 +24,12 @@
     <input type="hidden" id="fsoId" />
     <input type="hidden" id="folderOperation" />
 </div>
-<div id="uploadDialog" title="Datei Hochladen">
-    <?php echo $this->plupload($this->url("cloud/default", array(
-        "controller"=>"file",
-        "action"=>"upload"
-    )), "fileupload"); ?>
+<div id="uploadDialog" title="Datai Hochladen">
+    <div id="fineupload"></div>
+    <div id="triggerFineupload" class="btn btn-primary" style="margin-top: 10px;">
+        <i class="icon-upload icon-white"></i> Dateien hochladen
+    </div>
 </div>
-<?php echo $this->inlineScript();?>
 <script type="text/javascript">
     <!--
     var actualFsoid = -1;
@@ -71,8 +70,7 @@
         }
     });
     $('#folderEditError').hide();
-    $( "#newFolderButton" )
-    .click(function() {
+    $( "#newFolderButton" ).click(function() {
         $("#fsoId").val(actualFsoid);
         $("#folderOperation").val("create");
         $( "#newFolderDialog" ).dialog( "open" );
@@ -109,12 +107,33 @@
         modal: true,
         show: "fade",
         hide: "fade",
-        minWidth: 600
+        minWidth: 800,
+        open: function() {
+            $('#fineupload').fineUploader({
+                request: {
+                    endpoint: '/ui/file/upload'
+                },
+                autoUpload: false,
+                multiple: true,
+                text: {
+                    uploadButton: 'Datei hinzuf&uuml;gen'
+                }
+            }).on('submit', function(event, id, filename) {
+                $(this).fineUploader('setParams', {'actualFsoId': actualFsoid});
+            }).on('complete', function (event, id, filename){
+                $("div#fineupload div.qq-uploader div.btn").css("margin-bottom", "5px");
+                
+            }).on('validate', function(event, id, filename){
+                $("div#fineupload div.qq-uploader div.btn").css("margin-bottom", "5px");
+            });
+            $(".qq-upload-button").addClass("btn").removeClass("qq-upload-button").css("margin-buttom", "10px");
+            $("#triggerFineupload").click(function() {
+                $("#fineupload").fineUploader('uploadStoredFiles');
+            });
+        }
     });
     $("#uploadButton").click(function(){
         $("#uploadDialog").dialog("open");
-        var uploader = $('#fileupload').plupload('getUploader');
-        uploader.refresh();
     });
     function showDialog(fsoid){
         $("#fsoId").val(fsoid);
@@ -123,15 +142,15 @@
         $( "#newFolderDialog" ).dialog( "open" );
     }
     
-function deleteObject(name, typ, id){
-    if(typ=="folder")
-        typ = "den Ordner";
-    else
-        typ = "die Datei";
-    $("#deleteFsoid").val(id);
-    $("#deleteText").html("Sind sie sicher, dass sie "+typ+" "+name+" l&ouml;schen wollen?");
-    $("#deleteDialog").dialog("open");
-}
+    function deleteObject(name, typ, id){
+        if(typ=="folder")
+            typ = "den Ordner";
+        else
+            typ = "die Datei";
+        $("#deleteFsoid").val(id);
+        $("#deleteText").html("Sind sie sicher, dass sie "+typ+" "+name+" l&ouml;schen wollen?");
+        $("#deleteDialog").dialog("open");
+    }
 
-//-->
+    //-->
 </script>

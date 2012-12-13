@@ -34,6 +34,11 @@ return array(
                 $a = new SCToolbox\AAS\AuthService($em);
                 return $a;
             },
+            'SCToolbox\Upload\JQFileUpload\UploadHandler' => function(\Zend\ServiceManager\ServiceManager $sm) {
+                return new \SCToolbox\Upload\JQFileUpload\UploadHandler(
+                                $sm->get('Response')
+                );
+            }
         ),
         'invokables' => array(
             'Navigation' => '\SCToolbox\Navigation\Navigation',

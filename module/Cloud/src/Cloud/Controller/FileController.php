@@ -32,13 +32,12 @@ class FileController extends AbstractEntityManagerAwareController {
      * @var Zend\Session\Container
      */
     protected $session;
-    
     protected static $SESSION_NAME = "Cloud_FileManager";
 
     public function indexAction() {
         $model = new ViewModel();
         $fsoid = -1;
-        if(!isset($_COOKIE["showRoot"]) && isset($_SESSION[self::$SESSION_NAME]["lastFSOID"])){
+        if (!isset($_COOKIE["showRoot"]) && isset($_SESSION[self::$SESSION_NAME]["lastFSOID"])) {
             $fsoid = $_SESSION[self::$SESSION_NAME]["lastFSOID"];
             unset($_COOKIE["showRoot"]);
         }
@@ -51,7 +50,7 @@ class FileController extends AbstractEntityManagerAwareController {
         $this->res()->addCss("css/files.css");
         $this->res()->addJs("js/files.js");
         $this->res()->addBundle("jquerydynatree");
-        $this->res()->addBundle("plupload");
+        $this->res()->addBundle("fineupload");
         $this->fileManager = $this->getServiceLocator()->get("FileManager");
         return parent::onDispatch($e);
     }
@@ -124,6 +123,14 @@ class FileController extends AbstractEntityManagerAwareController {
         return $model;
     }
 
+    public function uploadAction() {
+        $uploader = new \SCToolbox\Upload\Fineuploader\FineUploader();
+        $data = $uploader->handleUpload($this->getTempDir());
+        $model = new JsonModel($data);
+        rmdir($this->getTempDir());
+        return $model;
+    }
+
     protected function getFsoForHtml($fsoid) {
         $_SESSION[self::$SESSION_NAME]["lastFSOID"] = $fsoid;
         $ret = null;
@@ -143,6 +150,18 @@ class FileController extends AbstractEntityManagerAwareController {
     protected function getRoot() {
         //return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
         return $this->fileManager->getRoot();
+    }
+    
+    protected function getTempDir() {
+        $dir = getcwd()."/data/tmp";
+        if(!is_dir($dir)){
+            mkdir($dir);
+        }
+        $dir .= "/".session_id();
+        if(!is_dir($dir)){
+            mkdir($dir);
+        }
+        return $dir;
     }
 
 }
