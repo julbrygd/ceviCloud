@@ -5,7 +5,7 @@ namespace SCToolbox\Upload\Fineuploader;
 /**
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
-class FineuploaderForm {
+class FineuploaderForm extends AbstractFineUploadMethod{
 
     /**
      * Save the file to the specified path
@@ -29,6 +29,10 @@ class FineuploaderForm {
      */
     public function getSize() {
         return $_FILES['qqfile']['size'];
+    }
+
+    public function getParameter($name) {
+        
     }
 
 }

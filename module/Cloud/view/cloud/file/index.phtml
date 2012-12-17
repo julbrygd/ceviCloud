@@ -135,6 +135,16 @@
     $("#uploadButton").click(function(){
         $("#uploadDialog").dialog("open");
     });
+    $(function(){
+          checkUpload();
+    });
+    function checkUpload() {
+        if(actualFsoid==-1){
+            $("#uploadButton").hide();
+        } else {
+            $("#uploadButton").show();
+        }
+    }
     function showDialog(fsoid){
         $("#fsoId").val(fsoid);
         $("#folderOperation").val("rename");

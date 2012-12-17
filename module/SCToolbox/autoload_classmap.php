@@ -13,4 +13,5 @@ return array(
     'SCToolbox\Upload\Fineuploader\FineUploader' => __DIR__ .'/src/SCToolbox/Upload/Fineuploader/FineUploader.php',
     'SCToolbox\Upload\Fineuploader\FineuploaderXhr' => __DIR__ .'/src/SCToolbox/Upload/Fineuploader/FineuploaderXhr.php',
     'SCToolbox\Upload\Fineuploader\FineUploaderForm' => __DIR__ .'/src/SCToolbox/Upload/Fineuploader/FineuploaderForm.php',
+    'SCToolbox\Doctrine\ArrayAccessEntity' => __DIR__ . '/src/SCToolbox/Doctrine/ArrayAccessEntity.php',
 );

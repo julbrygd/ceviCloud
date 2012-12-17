@@ -4,36 +4,99 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace Cloud\FileManager\Entity;
+
+use \Doctrine\ORM\Mapping as ORM;
+
 /**
- * Description of Metadata
- *
+ * Description of Metadata object for FSO
+ * @ORM\Entity
+ * @ORM\Table(name="file_filemetadata")
  * @author stephan
  */
-class Metadata {
+class Metadata extends \SCToolbox\Doctrine\ArrayAccessEntity {
+
     /**
-     *
-     * @var array
+     * @ORM\Id 
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      */
-    protected $_data = array();
+    protected $mid;
+
+    /**
+     * @ORM\OneToOne(targetEntity="FileSystemObject", inversedBy="metadata")
+     * @ORM\JoinColumn(name="filesystemobject_id", referencedColumnName="fsoid")
+     * */
+    protected $fsoid;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $folderName;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $fileName;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $size;
+
+    public function getFolderName() {
+        return $this->folderName;
+    }
+
+    public function setFolderName($folderName) {
+        $this->folderName = $folderName;
+    }
+
+    public function getFileName() {
+        return $this->fileName;
+    }
+
+    public function setFileName($fileName) {
+        $this->fileName = $fileName;
+    }
+
+    public function getSize() {
+        return $this->size;
+    }
+
+    public function getSizeAsString() {
+        return $this->fileSizeHumanReadable($this->size);
+    }
+
+    public function setSize($size) {
+        $this->size = $size;
+    }
+
+    public function getMid() {
+        return $this->mid;
+    }
+
+    public function getFsoid() {
+        return $this->fsoid;
+    }
     
-    public function __call($name, $arguments) {
-        $first = substr($name, 0,3);
-        $second = substr($name, 3);
-        if($first=="get"){
-            return $this->_data[strtolower($second)];
-        } else if($first=="set"){
-            $this->_data[strtolower($second)] = $arguments;
-            return $this;
-        }
+    public function setFsoid($fsoid) {
+        $this->fsoid = $fsoid;
     }
 
-    public function __get($name) {
-        return $this->_data["name"];
-    }
-
-    public function __set($name, $value) {
-        $this->_data["name"]=$value;
+    
+    protected function fileSizeHumanReadable($size) {
+        if ($size < 1024)
+            return $size . ' B';
+        elseif ($size < 1048576)
+            return round($size / 1024, 2) . ' KB';
+        elseif ($size < 1073741824)
+            return round($size / 1048576, 2) . ' MB';
+        elseif ($size < 1099511627776)
+            return round($size / 1073741824, 2) . ' GB';
+        else
+            return round($size / 1099511627776, 2) . ' TB';
     }
 
 }

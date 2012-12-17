@@ -57,6 +57,16 @@ class FineUploader {
         if ($this->file)
             return $this->file->getName();
     }
+    
+    /**
+     * 
+     * @param string $name Parameter Name
+     * @return string
+     */
+    public function getParameter($name) {
+        if ($this->file)
+            return $this->file->getParameter($name);
+    }
 
     /**
      * Internal function that checks if server's may sizes match the

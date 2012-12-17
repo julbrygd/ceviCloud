@@ -43,10 +43,12 @@ $(function(){
 function reloadData(){
     var tree = $("#tree").dynatree("getTree");
     tree.reload();
+    checkUpload();
 }
 
 function ajaxFileLoad(url, id, fsoid){
     $("#"+id).load(url, function() {
         actualFsoid = fsoid;
+        checkUpload();
     });
 }

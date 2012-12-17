@@ -51,6 +51,18 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
     protected $lastError;
 
     /**
+     *
+     * @var string
+     */
+    protected $tempDir;
+
+    /**
+     *
+     * @var string
+     */
+    protected $dataDir;
+
+    /**
      * 
      * @return \Cloud\FileManager\Entity\FileSystemObject
      */
@@ -77,8 +89,7 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
         $dir->setCreated(new \DateTime());
         if ($parrent == -1) {
             $dir->setRootElement(true);
-        }
-        else {
+        } else {
             $dir->setRootElement(false);
             $pFso = $this->getRepo()->find($parrent);
             $dir->setParent($pFso);
@@ -87,20 +98,20 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
         $this->getEntityManager()->flush();
         return true;
     }
-    
-    public function renameObject($name, $fsoid){
+
+    public function renameObject($name, $fsoid) {
         $fso = $this->getRepo()->find($fsoid);
         $fso->setName($name);
         $this->getEntityManager()->persist($fso);
         $this->getEntityManager()->flush();
         return true;
     }
-    
-    public function deleteObject($fsoid){
+
+    public function deleteObject($fsoid) {
         /** @var \Cloud\FileManager\Entity\FileSystemObject */
         $fso = $this->getRepo()->find($fsoid);
-        if($fso->hasChildren()){
-            foreach($fso->getChildren() as $child){
+        if ($fso->hasChildren()) {
+            foreach ($fso->getChildren() as $child) {
                 $this->deleteObject($child->getFsoid());
             }
         } else {
@@ -108,6 +119,40 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
             $this->getEntityManager()->flush();
         }
         return true;
+    }
+
+    public function createFile($name, $parentId) {
+        $files = $this->find($parentId)->getChildren();
+        $fso = null;
+        foreach ($files->getIterator() as $file) {
+            if ($file->isFile()) {
+                if ($file->getName() == $name) {
+                    $fso = $file;
+                }
+            }
+        }
+        $md5 = md5_file($this->getTempDir() . "/" . $name);
+        if ($fso == null) {
+            $fso = new FileSystemObject();
+            $fso->setParent($this->find($parentId));
+            $fso->setName($name);
+            $fso->setType(FileSystemObject::$TYPE_FILE);
+            $fso->setCreated(new \DateTime());
+            $fso->setRootElement(false);
+            $fso->getMetadata()->setFolderName($md5);
+        }
+        $fso->setLastModified(new \DateTime());
+        $newname = $this->getDataDir() . "/" . $fso->getMetadata()->getFolderName();
+        if (!is_dir($newname)) {
+            mkdir($newname, 0755, true);
+        }
+        $newname .= "/" . $md5;
+        rename($this->getTempDir() . "/" . $name, $newname);
+        $fso->getMetadata()->setFileName($md5);
+        $fso->getMetadata()->setSize(filesize($newname));
+        $this->_em->persist($fso);
+        $this->_em->flush();
+        return;
     }
 
     public function getLastError() {
@@ -156,6 +201,34 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
      */
     public function getServiceManager() {
         return $this->_sm;
+    }
+
+    public function getTempDir() {
+        return $this->tempDir;
+    }
+
+    public function setTempDir($tempDir) {
+        $this->tempDir = $tempDir;
+    }
+
+    public function getDataDir() {
+        return $this->dataDir;
+    }
+
+    public function setDataDir($dataDir) {
+        $this->dataDir = $dataDir;
+    }
+
+    protected function fileSizeHumanReadable($file, $setup = null) {
+        $FZ = ($file && @is_file($file)) ? filesize($file) : NULL;
+        $FS = array("B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+
+        if (!$setup && $setup !== 0) {
+            return number_format($FZ / pow(1024, $I = floor(log($FZ, 1024))), ($i >= 1) ? 2 : 0) . ' ' . $FS[$I];
+        } elseif ($setup == 'INT')
+            return number_format($FZ);
+        else
+            return number_format($FZ / pow(1024, $setup), ($setup >= 1) ? 2 : 0 ) . ' ' . $FS[$setup];
     }
 
 }

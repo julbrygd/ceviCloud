@@ -3,6 +3,7 @@
         <tr>
             <th>Dateinamen</th>
             <th>Typ</th>
+            <th>Gr&ouml;sse</th>
             <th>Erstelldatum</th>
             <th>&Auml;nderungsdatum</th>
             <th>Author</th>
@@ -19,6 +20,9 @@
                     ?>', 'fileSection', <?php echo $rootItem->getFsoid(); ?>)"><?php echo $rootItem->getName(); ?></a>
                 </td>
                 <td><?php echo $rootItem->getTypeAsString(); ?></td>
+                <?php if($rootItem->isFile()) {?>
+                <td><?php echo $rootItem->getMetadata()->getSizeAsString(); ?></td>
+                <?php } else {?><td>&nbsp;</td><?php } ?>
                 <td><?php echo $rootItem->getCreatedAsString(); ?></td>
                 <td><?php echo $rootItem->getLastModifiedAsString(); ?></td>
                 <td><?php echo $rootItem->getCreateUser(); ?></td>

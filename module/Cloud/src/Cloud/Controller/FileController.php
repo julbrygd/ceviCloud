@@ -52,6 +52,8 @@ class FileController extends AbstractEntityManagerAwareController {
         $this->res()->addBundle("jquerydynatree");
         $this->res()->addBundle("fineupload");
         $this->fileManager = $this->getServiceLocator()->get("FileManager");
+        $this->fileManager->setDataDir($this->getDataDir());
+        $this->fileManager->setTempDir($this->getTempDir());
         return parent::onDispatch($e);
     }
 
@@ -125,10 +127,21 @@ class FileController extends AbstractEntityManagerAwareController {
 
     public function uploadAction() {
         $uploader = new \SCToolbox\Upload\Fineuploader\FineUploader();
+        $fsoid = $uploader->getParameter("actualFsoId");
+        $fileName = $uploader->getName();
         $data = $uploader->handleUpload($this->getTempDir());
+        $this->fileManager->createFile($fileName, $fsoid);
         $model = new JsonModel($data);
-        rmdir($this->getTempDir());
+        $this->delTree($this->getTempDir());
         return $model;
+    }
+
+    protected function delTree($dir) {
+        $files = array_diff(scandir($dir), array('.', '..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 
     protected function getFsoForHtml($fsoid) {
@@ -152,13 +165,21 @@ class FileController extends AbstractEntityManagerAwareController {
         return $this->fileManager->getRoot();
     }
     
-    protected function getTempDir() {
-        $dir = getcwd()."/data/tmp";
+    protected function getDataDir() {
+        $dir = getcwd() . "/data/cloud/file";
         if(!is_dir($dir)){
+            mkdir($dir, 0755, true);
+        }
+        return $dir;
+    }
+
+    protected function getTempDir() {
+        $dir = getcwd() . "/data/tmp";
+        if (!is_dir($dir)) {
             mkdir($dir);
         }
-        $dir .= "/".session_id();
-        if(!is_dir($dir)){
+        $dir .= "/" . session_id();
+        if (!is_dir($dir)) {
             mkdir($dir);
         }
         return $dir;

@@ -31,12 +31,12 @@ class FileSystemObject {
      * @ORM\Column(type="string")
      */
     protected $name;
-    
+
     /**
      * @ORM\Column(type="string")
      */
     protected $createUser;
-    
+
     /**
      * @ORM\Column(type="string")
      */
@@ -53,9 +53,9 @@ class FileSystemObject {
     protected $type;
 
     /**
-     * @ORM\Column(type="object", nullable=true)
-     * @var Cloud\FileManager\Entity\Metadata
-     */
+     * @ORM\OneToOne(targetEntity="Metadata", mappedBy="fsoid", cascade={"persist"})
+     * @var \Cloud\FileManager\Entity\Metadata
+     **/
     protected $metadata;
 
     /**
@@ -81,6 +81,8 @@ class FileSystemObject {
      * @var \DateTime
      */
     protected $lastModified;
+    
+    
 
     public function getName() {
         return $this->name;
@@ -98,6 +100,8 @@ class FileSystemObject {
         $ret = "";
         if ($this->type == self::$TYPE_FOLDER)
             $ret = "Ordner";
+        else
+            $ret = "Datei";
         return $ret;
     }
 
@@ -105,12 +109,26 @@ class FileSystemObject {
         $this->type = $type;
     }
 
+    /**
+     * 
+     * @return \Cloud\FileManager\Entity\Metadata
+     */
     public function getMetadata() {
+        if($this->metadata==null){
+            $this->setMetadata( new Metadata());
+        }
         return $this->metadata;
     }
 
-    public function setMetadata($metadata) {
+    public function setMetadata(Metadata $metadata) {
         $this->metadata = $metadata;
+        $this->metadata->setFsoid($this);
+    }
+    
+    public function setMetadataValue($name, $value) {
+        if($this->metadata != null){
+            $this->metadata->$name = $value;
+        }
     }
 
     public function getParent() {
@@ -177,6 +195,14 @@ class FileSystemObject {
         return $this->isRootElement;
     }
 
+    public function isFolder() {
+        return $this->getType() == self::$TYPE_FOLDER;
+    }
+
+    public function isFile() {
+        return !$this->isFolder();
+    }
+
     public function setRootElement($isRootElement) {
         $this->isRootElement = $isRootElement;
     }
@@ -184,6 +210,7 @@ class FileSystemObject {
     function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
     public function getCreateUser() {
         return $this->createUser;
     }
@@ -200,7 +227,6 @@ class FileSystemObject {
         $this->editUser = $editUser;
     }
 
-    
     public function toDynaTreeArray() {
         return array(
             "title" => $this->getName(),

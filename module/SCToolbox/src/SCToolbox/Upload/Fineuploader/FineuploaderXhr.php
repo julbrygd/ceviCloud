@@ -5,7 +5,7 @@ namespace SCToolbox\Upload\Fineuploader;
 /**
 * Handle file uploads via XMLHttpRequest
 */
-class FineuploaderXhr {
+class FineuploaderXhr extends AbstractFineUploadMethod{
 
     /**
      * Save the file to the specified path
@@ -47,6 +47,13 @@ class FineuploaderXhr {
         } else {
             throw new Exception('Getting content length is not supported.');
         }
+    }
+
+    public function getParameter($name) {
+        $ret = null;
+        if(isset($_GET[$name]))
+            $ret = $_GET[$name];
+        return $ret;
     }
 
 }
