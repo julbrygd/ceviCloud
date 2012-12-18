@@ -158,6 +158,30 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
     public function getLastError() {
         return $this->lastError;
     }
+    
+    public function findByPath(\string $path){
+        $pArra = explode("/", $path);
+        $fso = null;
+        foreach($pArra as $name){
+            if($fso == null) {
+                $fso = $this->findByName($name);
+                if(is_array($fso)&&count($fso)==1){
+                    $fso = $fso[0];
+                }
+            } else if($fso instanceof FileSystemObject){
+                $childs = $fso->getChildren();
+                foreach($childs as $child){
+                    if($child->getName()==$name)
+                        $fso=$child;
+                }
+            }
+        }
+        return $fso;
+    }
+    
+    public function findByName($name){
+        return $this->getRepo()->findBy(array("name"=>$name));
+    }
 
     /**
      * 

@@ -60,6 +60,19 @@ return array(
                             ),
                         ),
                     ),
+                    'showPaht' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/file/path/[:path]',
+                            'constraints' => array(
+                                'path' => '[[a-zA-Z].*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'file',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                     'register' => array(
                         'type' => 'Literal',
                         'options' => array(

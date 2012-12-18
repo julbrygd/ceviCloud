@@ -202,6 +202,17 @@ class FileSystemObject {
     public function isFile() {
         return !$this->isFolder();
     }
+    
+    public function getPath() {
+        $path = "/" . $this->name;
+        $ret = "";
+        if($this->parent!=null) {
+            $ret = $this->parent->getPath() . $path;
+        } else {
+            $ret = $path;
+        }
+        return $ret;
+    }
 
     public function setRootElement($isRootElement) {
         $this->isRootElement = $isRootElement;

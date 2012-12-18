@@ -41,7 +41,15 @@ class FileController extends AbstractEntityManagerAwareController {
             $fsoid = $_SESSION[self::$SESSION_NAME]["lastFSOID"];
             unset($_COOKIE["showRoot"]);
         }
-        $model->root = $this->getFsoForHtml($fsoid);
+        $path = $this->getEvent()->getRouteMatch()->getParam("path", null);
+        if ($path != null) {
+            $fso = $this->fileManager->findByPath($path);
+            $model->root = $fso->getChildren();
+            $model->actualFsoid = $fso->getFsoid();
+        } else {
+            $model->root = $this->getFsoForHtml($fsoid);
+            $model->actualFsoid = -1;
+        }
         return $model;
     }
 
@@ -164,10 +172,10 @@ class FileController extends AbstractEntityManagerAwareController {
         //return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
         return $this->fileManager->getRoot();
     }
-    
+
     protected function getDataDir() {
         $dir = getcwd() . "/data/cloud/file";
-        if(!is_dir($dir)){
+        if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
         return $dir;

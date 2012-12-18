@@ -28,6 +28,7 @@
                 <td><?php echo $rootItem->getCreateUser(); ?></td>
                 <td><?php echo $rootItem->getEditUser(); ?></td>
                 <td>
+                    <?php echo $rootItem->getPath(); ?>
                     <a href="javascript:showDialog(<?php echo $rootItem->getFsoid() ?>)">
                         <i class="icon-pencil"></i>
                     </a>

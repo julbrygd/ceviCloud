@@ -53,7 +53,8 @@ class ExtendedNavigation extends ZendNavigation{
             if($page instanceof \Zend\Navigation\Page\Mvc){
                 if(self::getDefaultRouter()!=null&&$page->getRouter()==null){
                     $page->setRouter(self::getDefaultRouter());
-                    $page->setRouteMatch(self::getDefaultRouterMatch());
+                    if(self::getDefaultRouterMatch()!=null)
+                        $page->setRouteMatch(self::getDefaultRouterMatch());
                 }
             }
             $page->setActive($page->isActive());
