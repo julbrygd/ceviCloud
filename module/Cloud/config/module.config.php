@@ -73,6 +73,19 @@ return array(
                             ),
                         ),
                     ),
+                    'downloadFile' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/file/download/[:path]',
+                            'constraints' => array(
+                                'path' => '[[a-zA-Z].*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'file',
+                                'action' => 'download',
+                            ),
+                        ),
+                    ),
                     'register' => array(
                         'type' => 'Literal',
                         'options' => array(

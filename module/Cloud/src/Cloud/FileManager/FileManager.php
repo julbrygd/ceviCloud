@@ -114,10 +114,12 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
             foreach ($fso->getChildren() as $child) {
                 $this->deleteObject($child->getFsoid());
             }
-        } else {
-            $this->getEntityManager()->remove($fso);
-            $this->getEntityManager()->flush();
         }
+        if($fso->hasMetadata()){
+            $this->getEntityManager()->remove($fso->getMetadata());
+        }
+        $this->getEntityManager()->remove($fso);
+        $this->getEntityManager()->flush();
         return true;
     }
 
@@ -158,29 +160,29 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
     public function getLastError() {
         return $this->lastError;
     }
-    
-    public function findByPath(\string $path){
+
+    public function findByPath($path) {
         $pArra = explode("/", $path);
         $fso = null;
-        foreach($pArra as $name){
-            if($fso == null) {
+        foreach ($pArra as $name) {
+            if ($fso == null) {
                 $fso = $this->findByName($name);
-                if(is_array($fso)&&count($fso)==1){
+                if (is_array($fso) && count($fso) == 1) {
                     $fso = $fso[0];
                 }
-            } else if($fso instanceof FileSystemObject){
+            } else if ($fso instanceof FileSystemObject) {
                 $childs = $fso->getChildren();
-                foreach($childs as $child){
-                    if($child->getName()==$name)
-                        $fso=$child;
+                foreach ($childs as $child) {
+                    if ($child->getName() == $name)
+                        $fso = $child;
                 }
             }
         }
         return $fso;
     }
-    
-    public function findByName($name){
-        return $this->getRepo()->findBy(array("name"=>$name));
+
+    public function findByName($name) {
+        return $this->getRepo()->findBy(array("name" => $name));
     }
 
     /**

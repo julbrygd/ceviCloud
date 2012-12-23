@@ -33,6 +33,7 @@
 <script type="text/javascript">
     <!--
     var actualFsoid = <?php echo $this->actualFsoid; ?>;
+    var lastFsoid = new Array();
     $( "#newFolderDialog" ).dialog({
         autoOpen: false,
         modal: true,
@@ -130,6 +131,9 @@
             $("#triggerFineupload").click(function() {
                 $("#fineupload").fineUploader('uploadStoredFiles');
             });
+        },
+        close: function() {
+            alert("close");
         }
     });
     $("#uploadButton").click(function(){

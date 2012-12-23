@@ -12,12 +12,19 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($this->fsos as $rootItem) { ?>
+        <?php foreach ($this->fsos as $rootItem) { 
+            $file = "fsFileLink";
+            if(!$rootItem->isFile())
+                $file = "fsFolderLink";
+            ?>
             <tr id="fsorow_<?php echo $rootItem->getFsoid(); ?>">
                 <td>
-                    <a href="javascript:ajaxFileLoad('<?php 
-                        echo $this->url('cloud/showFile', array('fsoid'=>$rootItem->getFsoid())); 
-                    ?>', 'fileSection', <?php echo $rootItem->getFsoid(); ?>)"><?php echo $rootItem->getName(); ?></a>
+                    <a id="fsoLink_<?php echo $rootItem->getFsoid()?>" href="<?php 
+                        if($rootItem->isFile()) {
+                            echo $this->url('cloud/downloadFile').$rootItem->getPath(false);
+                        } else {
+                            echo $this->url('cloud/showPaht').$rootItem->getPath(false);
+                        }?>" class="<?php echo $file?>"><?php echo $rootItem->getName(); ?></a>
                 </td>
                 <td><?php echo $rootItem->getTypeAsString(); ?></td>
                 <?php if($rootItem->isFile()) {?>

@@ -44,11 +44,44 @@ class FileController extends AbstractEntityManagerAwareController {
         $path = $this->getEvent()->getRouteMatch()->getParam("path", null);
         if ($path != null) {
             $fso = $this->fileManager->findByPath($path);
-            $model->root = $fso->getChildren();
             $model->actualFsoid = $fso->getFsoid();
+            if ($this->getRequest()->isPost()) {
+                $model->setTerminal(true);
+                $model->setTemplate('show');
+                $model->fsos = $fso->getChildren()->toArray();
+            } else {
+                $model->root = $fso->getChildren()->toArray();
+            }
         } else {
             $model->root = $this->getFsoForHtml($fsoid);
             $model->actualFsoid = -1;
+        }
+        return $model;
+    }
+
+    public function downloadAction() {
+        $path = $this->getEvent()->getRouteMatch()->getParam("path", null);       
+        $model = new ViewModel();
+        $model->setTerminal(true);
+        if ($path != null) {
+            $fso = $this->fileManager->findByPath($path);
+            if($fso instanceof FileSystemObject){
+                $dataPath = $this->fileManager->getDataDir();
+                $file = $dataPath . "/" .$fso->getMetadata()->getFolderName();
+                $file .= "/" . $fso->getMetadata()->getFileName();
+                $mimeType = mime_content_type($file);
+                $name = $fso->getName();
+                $now = new \DateTime("now", new \DateTimeZone("GMT"));
+                $this->getResponse()->getHeaders()->addHeaderLine('Content-Description: File Transfer');
+                $this->getResponse()->getHeaders()->addHeaderLine('Content-Type: '.$mimeType);
+                $this->getResponse()->getHeaders()->addHeaderLine('Content-Disposition: attachment; filename='.$name);
+                $this->getResponse()->getHeaders()->addHeaderLine('Content-Transfer-Encoding: binary');
+                $this->getResponse()->getHeaders()->addHeaderLine('Expires: '. $now->format("r"));
+                $this->getResponse()->getHeaders()->addHeaderLine('Cache-Control: must-revalidate');
+                $this->getResponse()->getHeaders()->addHeaderLine('Pragma: public');
+                $this->getResponse()->getHeaders()->addHeaderLine('Content-Length: '.filesize($file));
+                $model->filename = $file;
+            }
         }
         return $model;
     }
@@ -169,7 +202,7 @@ class FileController extends AbstractEntityManagerAwareController {
      * @return FileSystemObject
      */
     protected function getRoot() {
-        //return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
+//return $this->fsoRepo->findOneBy(array("name" => "ROOT"));
         return $this->fileManager->getRoot();
     }
 

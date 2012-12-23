@@ -3,9 +3,10 @@ $(function(){
     // and pass the tree options as an argument to the dynatree() function:
     $("#tree").dynatree({
         onActivate: function(node) {
-        // A DynaTreeNode object is passed to the activation handler
-        // Note: we also get this event, if persistence is on, and the page is reloaded.
-        //alert("You activated " + node.data.title);
+            // A DynaTreeNode object is passed to the activation handler
+            // Note: we also get this event, if persistence is on, and the page is reloaded.
+            alert("You activated " + node.data.title);
+            loadFilePath('/ui/file/path'+node.data.path, node.data.fsoid);
         },
         initAjax: {
             url: "/ui/file/folderStructure",
@@ -37,8 +38,25 @@ $(function(){
                 {title: "Item 3"}
             ]*/
     });
+    
+    $("a.fsFolderLink").bind("click", function(e){
+        
+        $(window).bind("popstate", function() {
+            alert("popstate");
+            ajaxFileLoad(location.pathname, lastFsoid.pop());
+        });
+        var id = $(this).attr("id").substring("fsoLink_".length);
+        var url = $(this).attr("href");
+        loadFilePath(url, id);
+        e.preventDefault();
+        return false;
+    });
 });
 
+function loadFilePath(url, id){
+    history.pushState(null, null, url);
+    ajaxFileLoad(url, id);
+}
 
 function reloadData(){
     var tree = $("#tree").dynatree("getTree");
@@ -46,9 +64,13 @@ function reloadData(){
     checkUpload();
 }
 
-function ajaxFileLoad(url, id, fsoid){
-    $("#"+id).load(url, function() {
-        actualFsoid = fsoid;
-        checkUpload();
+function ajaxFileLoad(url, id){
+    alert("ajax load");
+    $("#fileSection").load(url, {
+        ajax: true
+    }, function(){
+        lastFsoid.push(actualFsoid);
+        actualFsoid = id;
+        reloadData();
     });
 }

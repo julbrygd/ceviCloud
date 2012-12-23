@@ -119,6 +119,10 @@ class FileSystemObject {
         }
         return $this->metadata;
     }
+    
+    public function hasMetadata() {
+        return $this->metadata!=null;
+    }
 
     public function setMetadata(Metadata $metadata) {
         $this->metadata = $metadata;
@@ -203,13 +207,18 @@ class FileSystemObject {
         return !$this->isFolder();
     }
     
-    public function getPath() {
-        $path = "/" . $this->name;
+    public function getPath($withStartingSlash=true) {
+        $path = "";
+        $path .= "/" . $this->name;
         $ret = "";
         if($this->parent!=null) {
-            $ret = $this->parent->getPath() . $path;
+            $ret = $this->parent->getPath($withStartingSlash) . $path;
         } else {
-            $ret = $path;
+            if($withStartingSlash) {
+                $ret = $path;
+            }else {
+                $ret = $this->name;
+            }
         }
         return $ret;
     }
@@ -243,6 +252,7 @@ class FileSystemObject {
             "title" => $this->getName(),
             "isFolder" => true,
             "isLazy" => true,
+            "path" => $this->getPath(),
             "fsoid" => $this->getFsoid()
         );
     }
@@ -256,6 +266,7 @@ class FileSystemObject {
                         "title" => $child->getName(),
                         "isFolder" => true,
                         "isLazy" => true,
+                        "path" => $child->getPath(),
                         "fsoid" => $child->getFsoid()
                     );
                 }
