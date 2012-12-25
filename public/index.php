@@ -10,4 +10,10 @@ include 'init_autoloader.php';
 
 // Run the application!
 $app = Zend\Mvc\Application::init(include 'config/application.config.php');
-$app->run();
+/** @var SCToolbox\Service\ClientType */
+$cl = $app->getServiceManager()->get("sctoolbox.clienttype");
+if($cl->isWebdav()){
+    
+} else {
+    $app->run();
+}

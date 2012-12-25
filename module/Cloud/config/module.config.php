@@ -22,6 +22,19 @@ return array(
                     ),
                 ),
             ),
+            'dav' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/dav[:path]',
+                    'constraints' => array(
+                        'path' => '*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Dav',
+                        'action' => 'dav'
+                    ),
+                ),
+            ),
             'cloud' => array(
                 'type' => 'Literal',
                 'options' => array(

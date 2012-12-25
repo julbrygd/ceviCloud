@@ -3,9 +3,6 @@ $(function(){
     // and pass the tree options as an argument to the dynatree() function:
     $("#tree").dynatree({
         onActivate: function(node) {
-            // A DynaTreeNode object is passed to the activation handler
-            // Note: we also get this event, if persistence is on, and the page is reloaded.
-            alert("You activated " + node.data.title);
             loadFilePath('/ui/file/path'+node.data.path, node.data.fsoid);
         },
         initAjax: {
@@ -42,7 +39,6 @@ $(function(){
     $("a.fsFolderLink").bind("click", function(e){
         
         $(window).bind("popstate", function() {
-            alert("popstate");
             ajaxFileLoad(location.pathname, lastFsoid.pop());
         });
         var id = $(this).attr("id").substring("fsoLink_".length);
@@ -65,7 +61,6 @@ function reloadData(){
 }
 
 function ajaxFileLoad(url, id){
-    alert("ajax load");
     $("#fileSection").load(url, {
         ajax: true
     }, function(){

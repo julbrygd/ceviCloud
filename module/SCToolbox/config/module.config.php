@@ -38,6 +38,14 @@ return array(
                 return new \SCToolbox\Upload\JQFileUpload\UploadHandler(
                                 $sm->get('Response')
                 );
+            },
+            'sctoolbox.clienttype' => function(Zend\ServiceManager\ServiceManager $sl) {
+                $em = $sl->get('doctrine.entitymanager.orm_default');
+                $c = new \SCToolbox\Service\ClientType();
+                $c->setEntityManager($em);
+                $c->setServiceLocator($sl);
+                $c->init();
+                return $c;
             }
         ),
         'invokables' => array(
@@ -49,8 +57,11 @@ return array(
             'SCToolbox_Annotation_Driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(realpath(__DIR__ . "/../src/SCToolbox/AAS/Entity"),
-                    realpath(__DIR__ . "/../src/SCToolbox/Navigation/Entity"))
+                'paths' => array(
+                    realpath(__DIR__ . "/../src/SCToolbox/AAS/Entity"),
+                    realpath(__DIR__ . "/../src/SCToolbox/Navigation/Entity"),
+                    realpath(__DIR__ . "/../src/SCToolbox/Client/Entity"),
+                )
             ),
             'orm_default' => array(
                 'drivers' => array(
