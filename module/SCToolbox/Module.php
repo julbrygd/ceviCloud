@@ -67,6 +67,12 @@ class Module implements AutoloaderProviderInterface {
         if (isset($moduleConfig["SCToolbox"]["moduleConfig"])) {
             $config["moduleConfig"] = $moduleConfig["SCToolbox"]["moduleConfig"];
         }
+        if (isset($moduleConfig["SCToolbox"]["AAS"])){
+            $config["AAS"] = $moduleConfig["SCToolbox"]["AAS"];
+        }
+        if (isset($moduleConfig["SCToolbox"]["mail"])){
+            $config["mail"] = $moduleConfig["SCToolbox"]["mail"];
+        }
         $this->_config = new Configuration($config);
         $logger = $this->_config->getLogger();
         if ($logger instanceof \Zend\Log\Logger) {

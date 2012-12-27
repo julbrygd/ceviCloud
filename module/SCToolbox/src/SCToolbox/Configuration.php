@@ -27,6 +27,8 @@ class Configuration {
     protected $_authController;
     protected $_authAction;
     protected $_reCAPTCHA = array();
+    protected $_aas = array();
+    protected $mail = array();
     /*
      * @var SCToolbox\Log\Logger
      */
@@ -58,6 +60,14 @@ class Configuration {
                 $this->_reCAPTCHA["pubKey"] = isset($config["reCAPTCHA"]["pubKey"]) ? $config["reCAPTCHA"]["pubKey"] : "";
                 $this->_reCAPTCHA["theme"] = isset($config["reCAPTCHA"]["theme"]) ? $config["reCAPTCHA"]["theme"] : "red";
                 $this->_reCAPTCHA["lang"] = isset($config["reCAPTCHA"]["lang"]) ? $config["reCAPTCHA"]["lang"] : "en";
+            }
+            if(isset($config["AAS"])) {
+                $this->_aas["class"] = isset($config["AAS"]["userClass"]) ? $config["AAS"]["userClass"] : "SCToolbox\AAS\Entity\User";
+                $this->_aas["userProperty"] = isset($config["AAS"]["userProperty"]) ? $config["AAS"]["userProperty"] : "username";
+                $this->_aas["passwordProperty"] = isset($config["AAS"]["passwordProperty"]) ? $config["AAS"]["passwordProperty"] : "password";
+            }
+            if(isset($config["mail"])) {
+                $this->mail = $config["mail"];
             }
             if (isset($config["log"])) {
                 $log = $config["log"];
@@ -214,8 +224,19 @@ class Configuration {
     public function getReCAPTCHA() {
         return $this->_reCAPTCHA;
     }
-
-
+    
+    public function getAAS($key = null) {
+        $ret = $this->_aas;
+        if($key!=null){
+            if(isset($ret[$key]))
+                $ret = $ret[$key];
+        }
+        return $ret;
+    }
+    
+    public function getMail() {
+        return $this->mail;
+    }
 }
 
 ?>

@@ -8,13 +8,10 @@
 namespace Cloud\Controller;
 
 use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
-use SCToolbox\AAS\Entity\User;
+use Cloud\AAS\Entity\DigestUser as User;
 use Zend\Mail\Message;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
-use Zend\Mail\Transport\Sendmail;
-use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Zend\Mail\Transport\SmtpOptions;
 
 /**
  * Description of UserController
@@ -160,20 +157,8 @@ class UserController extends AbstractEntityManagerAwareController {
         $msg->setEncoding("UTF-8");
         $msg->addFrom("cloud@cevi-birsfelden.ch", "Cevi Birsfelden Cloud")->setTo($user->getEmail(), $user->getName());
         $msg->setSubject("Cevi Birsfelden User Aktivierung");
-        $transport = new SmtpTransport();
-        $options = new SmtpOptions(array(
-                    'name' => 'asmtp.mail.hostpoint.ch',
-                    'host' => 'asmtp.mail.hostpoint.ch',
-                    'connection_class' => 'login',
-                    'connection_config' => array(
-                        'username' => 'stephan.conrad@cevi-birsfelden.ch',
-                        'password' => 'ascha33',
-                    ),
-                ));
-        $transport->setOptions($options);
-
-        $transport->send($msg);
-
+        
+        $this->getServiceLocator()->get("sctoolbox.mailService")->send($msg);
         return array("path" => $mm);
     }
 
@@ -188,7 +173,8 @@ class UserController extends AbstractEntityManagerAwareController {
                 return $viewModel;
             } else {
                 $viewModel->url = $this->url()->fromRoute("home");
-                $q = $this->getEntityManager()->createQuery("SELECT u From SCToolbox\AAS\Entity\User u WHERE u.username = :name");
+                $class = $this->getServiceLocator()->get("SCToolbox/Config")->getAAS("class");
+                $q = $this->getEntityManager()->createQuery("SELECT u From ".$class." u WHERE u.username = :name");
                 $q->setParameter("name", $username);
                 try {
                     $tmp = $q->getSingleResult();

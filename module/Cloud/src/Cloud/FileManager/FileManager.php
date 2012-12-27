@@ -115,7 +115,7 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
                 $this->deleteObject($child->getFsoid());
             }
         }
-        if($fso->hasMetadata()){
+        if ($fso->hasMetadata()) {
             $this->getEntityManager()->remove($fso->getMetadata());
         }
         $this->getEntityManager()->remove($fso);
@@ -229,16 +229,8 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
         return $this->_sm;
     }
 
-    public function getTempDir() {
-        return $this->tempDir;
-    }
-
     public function setTempDir($tempDir) {
         $this->tempDir = $tempDir;
-    }
-
-    public function getDataDir() {
-        return $this->dataDir;
     }
 
     public function setDataDir($dataDir) {
@@ -255,6 +247,40 @@ class FileManager implements ServiceManagerAwareInterface, EntityManagerAwareInt
             return number_format($FZ);
         else
             return number_format($FZ / pow(1024, $setup), ($setup >= 1) ? 2 : 0 ) . ' ' . $FS[$setup];
+    }
+
+    public function getDataDir() {
+        if ($this->dataDir == null) {
+            $this->dataDir = getcwd() . "/data/cloud/file";
+            if (!is_dir($this->dataDir)) {
+                mkdir($this->dataDir, 0755, true);
+            }
+        }
+        return $this->dataDir;
+    }
+
+    public function getTempDir() {
+        if ($this->tempDir == null) {
+            $this->tempDir = getcwd() . "/data/tmp";
+            if (!is_dir($this->tempDir)) {
+                mkdir($this->tempDir);
+            }
+            $this->tempDir .= "/" . session_id();
+            if (!is_dir($this->tempDir)) {
+                mkdir($this->tempDir);
+            }
+        }
+        return $this->tempDir;
+    }
+    public function rmTempDir() {
+        return $this->delTree($this->getTempDir());
+    }
+    protected function delTree($dir) {
+        $files = array_diff(scandir($dir), array('.', '..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 
 }

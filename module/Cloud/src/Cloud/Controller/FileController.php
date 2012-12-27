@@ -93,8 +93,6 @@ class FileController extends AbstractEntityManagerAwareController {
         $this->res()->addBundle("jquerydynatree");
         $this->res()->addBundle("fineupload");
         $this->fileManager = $this->getServiceLocator()->get("FileManager");
-        $this->fileManager->setDataDir($this->getDataDir());
-        $this->fileManager->setTempDir($this->getTempDir());
         return parent::onDispatch($e);
     }
 
@@ -170,10 +168,10 @@ class FileController extends AbstractEntityManagerAwareController {
         $uploader = new \SCToolbox\Upload\Fineuploader\FineUploader();
         $fsoid = $uploader->getParameter("actualFsoId");
         $fileName = $uploader->getName();
-        $data = $uploader->handleUpload($this->getTempDir());
+        $data = $uploader->handleUpload($this->fileManager->getTempDir());
         $this->fileManager->createFile($fileName, $fsoid);
         $model = new JsonModel($data);
-        $this->delTree($this->getTempDir());
+        $this->delTree($this->fileManager->getTempDir());
         return $model;
     }
 
@@ -206,25 +204,7 @@ class FileController extends AbstractEntityManagerAwareController {
         return $this->fileManager->getRoot();
     }
 
-    protected function getDataDir() {
-        $dir = getcwd() . "/data/cloud/file";
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-        return $dir;
-    }
-
-    protected function getTempDir() {
-        $dir = getcwd() . "/data/tmp";
-        if (!is_dir($dir)) {
-            mkdir($dir);
-        }
-        $dir .= "/" . session_id();
-        if (!is_dir($dir)) {
-            mkdir($dir);
-        }
-        return $dir;
-    }
+    
 
 }
 

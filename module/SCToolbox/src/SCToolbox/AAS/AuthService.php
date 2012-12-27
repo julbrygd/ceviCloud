@@ -29,21 +29,34 @@ class AuthService {
      * @var \Zend\Authentication\AuthenticationService
      */
     protected $auth;
+    
+    /**
+     *
+     * @var DoctrineModule\Options\Authentication;
+     */
+    protected $options;
 
     /**
      * 
      * @param \Doctrine\ORM\EntityManager $em
      */
-    public function __construct(\Doctrine\ORM\EntityManager $em) {
+    public function __construct(\Doctrine\ORM\EntityManager $em, \Zend\ServiceManager\ServiceLocatorInterface $sl) {
         $this->em = $em;
         $this->auth = new AuthenticationService();
-        $options = new Authentication();
-        $options->setObjectRepository($this->em->getRepository("SCToolbox\AAS\Entity\User"));
-        $options->setCredentialProperty("password")->setIdentityProperty("username");
-        $options->setCredentialCallable(function(\SCToolbox\AAS\Entity\User $user, $passwordGiven) {
+        $this->options = new Authentication();
+        $conf = $sl->get("SCToolbox/Config");
+        $class = $conf->getAAS("class");
+        $pwProp = $conf->getAAS("passwordProperty");
+        $userProp = $conf->getAAS("userProperty");
+        if(!class_exists($class)){
+            $class = "SCToolbox\AAS\Entity\User";
+        }
+        $this->options->setObjectRepository($this->em->getRepository($class));
+        $this->options->setCredentialProperty($pwProp)->setIdentityProperty($userProp);
+        $this->options->setCredentialCallable(function(\SCToolbox\AAS\Entity\UserInterface $user, $passwordGiven) {
                     return $user->checkPassword($passwordGiven);
                 });
-        $adapter = new ObjectRepository($options);
+        $adapter = new ObjectRepository($this->options);
         $this->auth->setAdapter($adapter);
         
         \SCToolbox\AAS\View\Helper\UserHelper::SET_AUTH_SERVICE($this);
@@ -63,6 +76,26 @@ class AuthService {
         $this->auth->getAdapter()->setIdentityValue($user);
         $this->auth->getAdapter()->setCredentialValue($password);
         return $this->auth->authenticate();
+    }
+    
+    public function authDigest($user, $realm, $hash){
+        $org = $this->options->getCredentialCallable();
+        $this->options->setCredentialCallable(function(\SCToolbox\AAS\Entity\UserInterface $user, $passwordGiven) {
+                    $ret = false;
+                    if(method_exists($user, "getDigest")) {
+                        $digest = $user->getDigest();
+                        $ret = ($digest == $passwordGiven);
+                    }
+                    return $ret;
+                });
+        $this->auth->getAdapter()->setOptions($this->options);
+        $this->auth->getAdapter()->setIdentityValue($user);
+        $this->auth->getAdapter()->setCredentialValue($hash);
+        $ret = $this->auth->authenticate();
+        $this->options->setCredentialCallable($org);
+        $this->auth->getAdapter()->setOptions($this->options);
+        return $ret;
+        
     }
     
     public function getUser(){

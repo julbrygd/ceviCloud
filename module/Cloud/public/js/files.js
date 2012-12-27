@@ -38,8 +38,9 @@ $(function(){
     
     $("a.fsFolderLink").bind("click", function(e){
         
-        $(window).bind("popstate", function() {
-            ajaxFileLoad(location.pathname, lastFsoid.pop());
+       $(window).bind("popstate", function() {
+            //ajaxFileLoad(location.pathname, lastFsoid.pop());
+            location.reload();
         });
         var id = $(this).attr("id").substring("fsoLink_".length);
         var url = $(this).attr("href");

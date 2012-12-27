@@ -31,7 +31,7 @@ return array(
         'factories' => array(
             'SCToolbox\AAS\AuthService' => function(Zend\ServiceManager\ServiceManager $sl) {
                 $em = $sl->get('doctrine.entitymanager.orm_default');
-                $a = new SCToolbox\AAS\AuthService($em);
+                $a = new SCToolbox\AAS\AuthService($em, $sl);
                 return $a;
             },
             'SCToolbox\Upload\JQFileUpload\UploadHandler' => function(\Zend\ServiceManager\ServiceManager $sm) {
@@ -50,6 +50,7 @@ return array(
         ),
         'invokables' => array(
             'Navigation' => '\SCToolbox\Navigation\Navigation',
+            'sctoolbox.mailService' => '\SCToolbox\Service\MailService'
         ),
     ),
     'doctrine' => array(

@@ -122,6 +122,7 @@ return array(
                             'defaults' => array(
                                 'controller' => "user",
                                 'action' => 'activate',
+                                'needsAuth' => false,
                             ),
                         ),
                     )
@@ -142,6 +143,11 @@ return array(
         ),
     ),
     "SCToolbox" => array(
+        "AAS" => array(
+            "userClass" => 'Cloud\AAS\Entity\DigestUser',
+            "userProperty" => 'username',
+            "passwordProperty" => 'password',
+        ),
         "moduleConfig" => array(
             "Cloud" => array(
                 "publicPath" => realpath(__DIR__ . "/../public"),
@@ -163,7 +169,10 @@ return array(
             'Cloud_Annotation_Driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(realpath(__DIR__ . "/../src/Cloud/FileManager/Entity"))
+                'paths' => array(
+                    realpath(__DIR__ . "/../src/Cloud/FileManager/Entity"),
+                    realpath(__DIR__ . "/../src/Cloud/AAS/Entity")
+                )
             ),
             'orm_default' => array(
                 'drivers' => array(
@@ -175,6 +184,7 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'FileManager' => '\Cloud\FileManager\FileManager',
+            'DavService' => '\Cloud\FileManager\WebDav\DavService'
         ),
     ),
 );

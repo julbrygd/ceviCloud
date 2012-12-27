@@ -13,7 +13,9 @@ $app = Zend\Mvc\Application::init(include 'config/application.config.php');
 /** @var SCToolbox\Service\ClientType */
 $cl = $app->getServiceManager()->get("sctoolbox.clienttype");
 if($cl->isWebdav()){
-    
+    $dav = $app->getServiceManager()->get("DavService");
+    $davServer = $dav->createDavServer();
+    $dav->run();
 } else {
     $app->run();
 }
