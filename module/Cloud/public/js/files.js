@@ -36,9 +36,13 @@ $(function(){
             ]*/
     });
     
+    bindOnClick();
+});
+
+function bindOnClick() {
     $("a.fsFolderLink").bind("click", function(e){
         
-       $(window).bind("popstate", function() {
+        $(window).bind("popstate", function() {
             //ajaxFileLoad(location.pathname, lastFsoid.pop());
             location.reload();
         });
@@ -48,7 +52,7 @@ $(function(){
         e.preventDefault();
         return false;
     });
-});
+}
 
 function loadFilePath(url, id){
     history.pushState(null, null, url);
@@ -58,11 +62,16 @@ function loadFilePath(url, id){
 function reloadData(){
     var tree = $("#tree").dynatree("getTree");
     tree.reload();
+    var node = tree.getNodeByKey(actualFsoid);
+    if(node!=null)
+        node.expand(true);
+    bindOnClick();
     checkUpload();
 }
 
 function ajaxFileLoad(url, id){
-    $("#fileSection").load(url, {
+    url = encodeURI(url);
+    $("#fileReleadSection").load(url, {
         ajax: true
     }, function(){
         lastFsoid.push(actualFsoid);

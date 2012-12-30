@@ -8,9 +8,7 @@
             <button  id="newFolderButton" role="button" class="btn">Neuer Ordner</button>
             <button  id="uploadButton" role="button" class="btn">Datei Hochladen</button>
         </div>
-        <div class="well" id="fileSection">
-            <?php echo $this->partial('show', array("fsos" => $this->root, "actualFsoid" => -1)); ?>
-        </div>
+        <?php echo $this->partial('show', array("fsos" => $this->root, "actualFsoid" => -1, "currentFso" => $this->currentFso)); ?>
     </div>
 </div>
 <div id="deleteDialog" title="Sind sie sicher">
@@ -33,6 +31,7 @@
 <script type="text/javascript">
     <!--
     var actualFsoid = <?php echo $this->actualFsoid; ?>;
+    var actualIdPath = "";
     var lastFsoid = new Array();
     $( "#newFolderDialog" ).dialog({
         autoOpen: false,

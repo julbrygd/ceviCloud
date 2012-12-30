@@ -48,8 +48,10 @@ class FileController extends AbstractEntityManagerAwareController {
             if ($this->getRequest()->isPost()) {
                 $model->setTerminal(true);
                 $model->setTemplate('show');
+                $model->currentFso = $fso;
                 $model->fsos = $fso->getChildren()->toArray();
             } else {
+                $model->currentFso = $fso;
                 $model->root = $fso->getChildren()->toArray();
             }
         } else {
