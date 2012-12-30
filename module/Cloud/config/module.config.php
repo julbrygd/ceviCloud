@@ -1,6 +1,11 @@
 <?php
 
 return array(
+    'view_helpers' => array(
+        'invokables' => array(
+            'pathList' => 'Cloud\FileManager\View\Helper\PathList'
+        )
+    ),
     'controllers' => array(
         'invokables' => array(
             'Cloud\Controller\Index' => 'Cloud\Controller\IndexController',

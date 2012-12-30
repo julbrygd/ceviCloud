@@ -222,6 +222,23 @@ class FileSystemObject {
         }
         return $ret;
     }
+    
+    public function getPath2($path=null) {
+        $first = false;
+        if($path == null) {
+            $path = new \Cloud\FileManager\Path\Path();
+            $first = true;
+        }
+        if($this->parent!=null){
+            $path = $this->parent->getPath2($path);
+            $path->append($this->name, $this->fsoid);
+        } else {
+            $path->insertFirst($this->name, $this->fsoid);
+        }
+        return $path;
+    }
+    
+    
 
     public function setRootElement($isRootElement) {
         $this->isRootElement = $isRootElement;
@@ -250,6 +267,7 @@ class FileSystemObject {
     public function toDynaTreeArray() {
         return array(
             "title" => $this->getName(),
+            "key" => $this->fsoid,
             "isFolder" => true,
             "isLazy" => true,
             "path" => $this->getPath(),
@@ -264,6 +282,7 @@ class FileSystemObject {
                 if ($child->getType() == self::$TYPE_FOLDER) {
                     $ret[] = array(
                         "title" => $child->getName(),
+                        "key" => $child->getFsoid(),
                         "isFolder" => true,
                         "isLazy" => true,
                         "path" => $child->getPath(),
