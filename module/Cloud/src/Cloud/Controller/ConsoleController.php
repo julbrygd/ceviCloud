@@ -18,7 +18,10 @@ use Zend\Console\Request as ConsoleRequest;
 class ConsoleController extends AbstractEntityManagerAwareController{
     
     public function updateAction() {
-        return "Nothing to update";
+        $ret = shell_exec("git fetch origin")."\n";
+        $ret .= shell_exec("git reset --hard origin/master")."\n";
+        $ret .= "\nNo application updates needed\n";
+        return $ret;
     }
     
     public function userAction() {
