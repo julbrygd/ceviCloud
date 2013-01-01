@@ -11,6 +11,7 @@ return array(
             'Cloud\Controller\Index' => 'Cloud\Controller\IndexController',
             'Cloud\Controller\User' => 'Cloud\Controller\UserController',
             'Cloud\Controller\File' => 'Cloud\Controller\FileController',
+            'Cloud\Controller\Console' => 'Cloud\Controller\ConsoleController',
             'Cloud\Controller\Filerest' => 'Cloud\Controller\FileRestController',
         ),
     ),
@@ -134,6 +135,33 @@ return array(
                 ),
             ),
         ),
+    ),
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'update' => array(
+                    'type' => 'simple',
+                    'options' => array(
+                        'route' => 'update',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Cloud\Controller',
+                            'controller' => 'Console',
+                            'action' => 'update',
+                        )
+                    )
+                ),
+                'userActivate' => array(
+                    'options' => array(
+                        'route' => 'user activate <user>',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Cloud\Controller',
+                            'controller' => 'Console',
+                            'action' => 'user',
+                        )
+                    )
+                ),
+            )
+        )
     ),
     'view_manager' => array(
         'template_map' => array(

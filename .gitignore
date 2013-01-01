@@ -9,7 +9,9 @@ nbproject
 composer.lock
 data/*
 
-data/log/system.log
 /vendor/
 public/res/*
 *.bak
+!/data/DoctrineORMModule/
+!/data/log/
+/data/log/system.log
