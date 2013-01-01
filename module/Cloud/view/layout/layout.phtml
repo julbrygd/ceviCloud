@@ -39,14 +39,10 @@
                                     </ul>
                                 </li>
 <?php } ?>
-                        </ul><!--
-                        <ul class="nav">
-                            <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                        </ul>-->
+                        </ul>
                         <?php
                         $menu = $this->SCNav->getMenu("main");
+                        $this->SCNav->saveMenu($menu);
                         $this->SCNav->setActive($menu);
                         echo $this->subMenu()->setUlClass("nav")->render($this->SCNav->getMenu("main"));
                         ?>

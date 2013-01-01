@@ -89,12 +89,29 @@ class Navigation implements EntityManagerAwareInterface, ServiceManagerAwareInte
         }else{
             $found = $found[0];
         }
-        $found->setPages($menu->toArray());
+        $e = $menu->findOneBy("controller", "settings");
+        $e->setRoute("cloud/default");
+        $array = $menu->toArray();
+        $array = $this->removeRoute($array);
+        $found->setPages($array);
         $this->getEntityManager()->persist($found);
         $this->getEntityManager()->flush();
         return $this;
     }
-    
+    protected function removeRoute(array $menu){
+        $ret = array();
+        foreach($menu as $key=>$val){
+            if(isset($val['type'])){
+                unset($val["router"]);
+                unset($val["route_match"]);
+                $ret[$key]=$val;
+            } else {
+                $ret[$key] = $this->removeRoute($val);
+            }
+        }
+        return $ret;
+    }
+
     /**
      * 
      * @param \Zend\Navigation\AbstractContainer $menu

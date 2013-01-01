@@ -12,6 +12,7 @@ return array(
             'Cloud\Controller\User' => 'Cloud\Controller\UserController',
             'Cloud\Controller\File' => 'Cloud\Controller\FileController',
             'Cloud\Controller\Console' => 'Cloud\Controller\ConsoleController',
+            'Cloud\Controller\Settings'=> 'Cloud\Controller\SettingsController',
             'Cloud\Controller\Filerest' => 'Cloud\Controller\FileRestController',
         ),
     ),

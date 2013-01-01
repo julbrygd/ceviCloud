@@ -83,7 +83,7 @@ class UserController extends AbstractEntityManagerAwareController {
                 } else {
                     $user = new User();
                     $user->setPassword($data["password1"]);
-                    $user->setActiv(false);
+                    $user->setActiv(true);
                     $user->setUsername($data["username"]);
                     $user->setEmail($data["email"]);
                     $user->setName($data["name"]);
