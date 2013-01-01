@@ -62,6 +62,8 @@ class ClientType implements EntityManagerAwareInterface, ServiceLocatorAwareInte
                     $ret->setUseragent($agent);
                     if ($method == "PROPFIND") {
                         $ret->setIsWebdavClient(true);
+                    } else if ($method == "OPTIONS") {
+                        $ret->setIsWebdavClient(true);
                     } else {
                         $ret->setIsWebdavClient(false);
                     }

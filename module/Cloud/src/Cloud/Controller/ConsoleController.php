@@ -18,7 +18,7 @@ use Zend\Console\Request as ConsoleRequest;
 class ConsoleController extends AbstractEntityManagerAwareController{
     
     public function updateAction() {
-        
+        return "Nothing to update";
     }
     
     public function userAction() {

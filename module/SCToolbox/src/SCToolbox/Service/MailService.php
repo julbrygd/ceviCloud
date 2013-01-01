@@ -57,10 +57,12 @@ class MailService implements ServiceLocatorAwareInterface {
     }
 
     public function send(Message $mail) {
-        if($this->transport==null){
+        if ($this->transport == null) {
             $this->init();
         }
-        $this->transport->send($mail);
+        if ($this->transport != null) {
+            $this->transport->send($mail);
+        }
     }
 
     /**
