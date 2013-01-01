@@ -42,7 +42,6 @@
                         </ul>
                         <?php
                         $menu = $this->SCNav->getMenu("main");
-                        $this->SCNav->saveMenu($menu);
                         $this->SCNav->setActive($menu);
                         echo $this->subMenu()->setUlClass("nav")->render($this->SCNav->getMenu("main"));
                         ?>
