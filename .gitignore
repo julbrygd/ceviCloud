@@ -7,8 +7,11 @@ nbproject
 .project
 .settings
 composer.lock
-data/*
-
+data/cache/*
+data/cloud*
+data/log/*
+data/ltmp
+data/DoctrineORMModule/Proxy/*
 /vendor/
 public/res/*
 *.bak
