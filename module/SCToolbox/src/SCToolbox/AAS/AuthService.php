@@ -103,9 +103,9 @@ class AuthService {
     }
 
     public function __call($name, $arguments) {
-        if (method_exists($this->auth, $name))
+        if (method_exists($this->auth, $name)) {
             call_user_func_array(array($this->auth,$name), $arguments);
-        else if (method_exists($this->auth->getAdapter(), $name))
+        } else if (method_exists($this->auth->getAdapter(), $name))
             call_user_func_array(array($this->auth->getAdapter(),$name), $arguments);
         else if (method_exists($this->auth->getIdentity(), $name))
             call_user_func_array(array($this->auth->getIdentity(), $name), $arguments);

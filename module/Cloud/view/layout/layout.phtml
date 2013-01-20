@@ -14,6 +14,7 @@
         </style>
     </head>
     <body>
+        <div id="wrap">
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -33,7 +34,10 @@
                                 <li id="fat-menu" class="dropdown">
                                     <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><?php echo $user->getName(); ?><b class="caret"></b></a>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                                        <li><a tabindex="-1" href="#">Einstellungen</a></li>
+                                        <li><a tabindex="-1" href="<?php echo $this->url('cloud/default', array(
+                                            "controller"=>"user",
+                                            'action'=>'settings'
+                                        ))?>">Einstellungen</a></li>
                                         <li class="divider"></li>
                                         <li><a tabindex="-1" href="<?php echo $url ?>">Logout</a></li>
                                     </ul>
@@ -56,7 +60,8 @@
 
 
 
-        </div><!--/.fluid-container-->  
+        </div><!--/.fluid-container-->
+    </div>  
         <footer id="footer">
             <p>&copy; Company 2012</p>
         </footer>

@@ -9,6 +9,7 @@ namespace Cloud\Controller;
 
 use SCToolbox\Mvc\Controller\AbstractEntityManagerAwareController;
 use Cloud\AAS\Entity\DigestUser as User;
+use Zend\View\Model\ViewModel;
 use Zend\Mail\Message;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
@@ -160,6 +161,41 @@ class UserController extends AbstractEntityManagerAwareController {
         
         $this->getServiceLocator()->get("sctoolbox.mailService")->send($msg);
         return array("path" => $mm);
+    }
+    
+    public function settingsAction() {
+        $model = new ViewModel();
+        $form = new \Cloud\Form\UserSettingsForm();
+        $model->form = $form;
+        $req = $this->getRequest();
+        if ($req->isPost()) {
+            $form->setData($req->getPost());
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $pw1 = $data["password1"];
+                $pw2 = $data["password2"];
+                if ($pw1 != $pw2) {
+                    $pel1 = $form->get("password1");
+                    $msg = $pel1->getMessages();
+                    $msg[] = "Die Passwörter sind nicht gleich";
+                    $pel1->setMessages($msg);
+                    $pel2 = $form->get("password2");
+                    $msg = $pel2->getMessages();
+                    $msg[] = "Die Passwörter sind nicht gleich";
+                    $pel2->setMessages($msg);
+                } else {
+                    $auth = $this->getServiceLocator()->get("SCToolbox\AAS\AuthService");
+                    $uid = $auth->getUser()->getUid();
+                    $user = $this->getEntityManager()->find("Cloud\AAS\Entity\DigestUser", $uid);
+                    $user->setPassword($pw1);
+                    $this->getEntityManager()->persist($user);
+                    $this->getEntityManager()->flush();
+                }
+            } else {
+                $form->setData($data);
+            }
+        }
+        return $model;
     }
 
     public function activateAction() {

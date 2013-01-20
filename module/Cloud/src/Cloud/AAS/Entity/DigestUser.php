@@ -125,7 +125,7 @@ class DigestUser implements UserInterface {
     }
 
     public function setDigest($digest) {
-        $this->digest = md5('"'.$this->getUsername() . ":".self::$REALM.":" . $digest.'"');
+        $this->digest = md5($this->getUsername() . ':' . self::$REALM . ':' . $digest);
     }
     
     public static function getRealm(){

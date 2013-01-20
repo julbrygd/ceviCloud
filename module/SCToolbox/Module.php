@@ -101,6 +101,10 @@ class Module implements AutoloaderProviderInterface {
     
     public function onRender(MvcEvent $e){
         $sm = $e->getApplication()->getServiceManager();
+        $routeMatch = $e->getRouteMatch();
+        if($routeMatch->getParam("layout", null)!=null){
+            $e->getViewModel()->setTemplate($routeMatch->getParam("layout"));
+        }
         $nav = $sm->get("Navigation");
         if($e->getViewModel()->terminate()==FALSE)
             $e->getViewModel()->setVariable("SCNav", $nav);

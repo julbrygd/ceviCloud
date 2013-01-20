@@ -26,6 +26,7 @@ return array(
                         'controller' => 'Cloud\Controller\Index',
                         'action' => 'index',
                         'needsAuth' => true,
+                        'layout' => 'cloud/layout/layout',
                     ),
                 ),
             ),
@@ -38,6 +39,7 @@ return array(
                         'controller' => 'Index',
                         'action' => 'index',
                         'needsAuth' => true,
+                        'layout' => 'cloud/layout/layout',
                     ),
                 ),
                 'may_terminate' => true,
@@ -167,6 +169,7 @@ return array(
     'view_manager' => array(
         'template_map' => array(
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'cloud/layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'show' => __DIR__ . '/../view/cloud/file/show.phtml',
         ),
         'template_path_stack' => array(
